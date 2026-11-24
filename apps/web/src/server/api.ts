@@ -174,9 +174,10 @@ on('POST', 'wallets', 'any', async ({ req, owner }) => {
     throw new HttpError(409, 'ALREADY_MONITORED', (e as Error).message)
   }
   // Backfill 30 days after responding (busy wallets take a while), then update the webhook's address list.
+  // Watch it in real time first (fast), then backfill 30 days (can take a while on busy wallets).
   after(async () => {
+    await refreshWebhook().catch((e) => console.error('webhook refresh failed', (e as Error).message))
     await syncWallet(w).catch((e) => console.error('backfill failed', w.id, (e as Error).message))
-    await refreshWebhook().catch(() => {})
   })
   return reply(201, walletView(w))
 })
