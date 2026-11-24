@@ -35,6 +35,7 @@ export function Footer() {
     ['Use Cases', [['/#use-cases', 'Trading agents'], ['/#use-cases', 'Payment agents'], ['/#use-cases', 'Treasury agents'], ['/#use-cases', 'Agent platforms']]],
     ['Developers', [['/docs#quickstart', 'Quickstart'], ['/docs#check', 'Check API'], ['/docs#sdk', 'TypeScript SDK'], ['/docs#codes', 'Reason codes']]],
     ['Security', [['/#security', 'Security model'], ['/docs#holds', 'Holds and approvals'], ['/docs#status', 'What is live']]],
+    ['Legal', [['/privacy', 'Privacy Policy'], ['/terms', 'Terms of Service'], ['/cookies', 'Cookie Policy']]],
   ]
   return (
     <footer className="relative overflow-hidden bg-[#0b0716] text-white">
@@ -45,7 +46,7 @@ export function Footer() {
           <div className="px-6 py-10 sm:px-8">
             <Link href="/" className="flex items-center gap-2 text-[26px] font-medium tracking-[-0.03em]"><PixelMark size={26} />Warden</Link>
             <p className="mt-2 text-[16px] text-white/85">The firewall agents sign through.</p>
-            <div className="mt-10 grid grid-cols-2 gap-8 text-[13px] sm:grid-cols-4">
+            <div className="mt-10 grid grid-cols-2 gap-8 text-[13px] sm:grid-cols-5">
               {cols.map(([t, links]) => (
                 <div key={t}>
                   <div className="text-white">{t}</div>
@@ -57,7 +58,7 @@ export function Footer() {
           <div className="flex flex-col border-t border-white/10 text-[13px] text-white/55 lg:border-l lg:border-t-0">
             <div className="flex flex-wrap gap-6 border-b border-white/10 px-6 py-5 sm:px-8"><Link href="/docs" className="hover:text-white">Documentation ↗</Link><Link href="/app" className="hover:text-white">Dashboard ↗</Link><a href="mailto:contactharryu@gmail.com" className="hover:text-white">Contact ↗</a></div>
             <DataField className="min-h-[200px] flex-1" />
-            <div className="border-t border-white/10 px-6 py-5 sm:px-8">Warden can block a transaction. It can never move your funds.<br />© 2026 Warden</div>
+            <div className="border-t border-white/10 px-6 py-5 sm:px-8">Warden can block a transaction. It can never move your funds.<div className="mt-2 flex flex-wrap gap-x-4 gap-y-1"><span>© 2026 Warden</span><Link href="/privacy" className="hover:text-white">Privacy</Link><Link href="/terms" className="hover:text-white">Terms</Link><Link href="/cookies" className="hover:text-white">Cookies</Link></div></div>
           </div>
         </div>
       </div>

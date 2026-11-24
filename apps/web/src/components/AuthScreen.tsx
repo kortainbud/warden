@@ -8,11 +8,21 @@ import { PixelMark, Label } from '@/components/hydra/bits'
 import { AsciiShield } from '@/components/hydra/anim'
 import { solanaWallets, useSession, type StdWallet } from '@/lib/session'
 
-const INSTALL = [
-  { name: 'Phantom', url: 'https://phantom.com/download' },
-  { name: 'Solflare', url: 'https://solflare.com/download' },
-  { name: 'Backpack', url: 'https://backpack.app/downloads' },
+interface Known { name: string; match: string; logo: string; install: string; deeplink?: (url: string, ref: string) => string }
+// Official logos in /public/wallets. Any other Wallet Standard wallet is detected automatically.
+const MAIN: Known[] = [
+  { name: 'Phantom', match: 'phantom', logo: '/wallets/phantom.svg', install: 'https://phantom.com/download', deeplink: (u, r) => `https://phantom.app/ul/browse/${encodeURIComponent(u)}?ref=${encodeURIComponent(r)}` },
+  { name: 'Solflare', match: 'solflare', logo: '/wallets/solflare.svg', install: 'https://solflare.com/download', deeplink: (u, r) => `https://solflare.com/ul/v1/browse/${encodeURIComponent(u)}?ref=${encodeURIComponent(r)}` },
+  { name: 'Backpack', match: 'backpack', logo: '/wallets/backpack.png', install: 'https://backpack.app/downloads' },
 ]
+const MORE: Known[] = [
+  { name: 'Jupiter Wallet', match: 'jupiter', logo: '/wallets/jupiter.svg', install: 'https://jup.ag/mobile' },
+  { name: 'Coinbase Wallet', match: 'coinbase', logo: '/wallets/coinbase.svg', install: 'https://www.coinbase.com/wallet/downloads' },
+  { name: 'Trust Wallet', match: 'trust', logo: '/wallets/trust.svg', install: 'https://trustwallet.com/download' },
+  { name: 'Exodus', match: 'exodus', logo: '/wallets/exodus.svg', install: 'https://www.exodus.com/download/' },
+  { name: 'Ledger', match: 'ledger', logo: '/wallets/ledger.svg', install: 'https://www.ledger.com/ledger-live' },
+]
+const isMobile = () => typeof navigator !== 'undefined' && /iphone|ipad|android/i.test(navigator.userAgent)
 
 const STEPS = [
   ['Connect', 'Sign a message with the wallet that owns your agents. It cannot move funds.'],
@@ -29,6 +39,7 @@ export default function AuthScreen({ mode }: { mode: 'login' | 'signup' }) {
   const [wallets, setWallets] = useState<StdWallet[]>([])
   const [busy, setBusy] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [more, setMore] = useState(false)
 
   useEffect(() => { void refresh() }, [refresh])
   useEffect(() => { if (checked && address) router.replace(next) }, [checked, address, next, router])
@@ -72,27 +83,25 @@ export default function AuthScreen({ mode }: { mode: 'login' | 'signup' }) {
           </p>
 
           <div className="mt-8 space-y-2">
-            {wallets.length ? wallets.map((w, i) => (
-              <button key={w.name} disabled={!!busy} onClick={() => go(w)}
-                className="group flex h-[52px] w-full items-center gap-3 border border-line-strong bg-surface px-4 text-left text-[15px] transition-all hover:border-lav hover:bg-sunken disabled:opacity-60 [animation:fadeUp_.5s_ease-out_both]"
-                style={{ animationDelay: `${100 + i * 70}ms` }}>
+            {MAIN.map((k, i) => <WalletRow key={k.name} k={k} wallets={wallets} busy={busy} go={go} delay={100 + i * 70} />)}
+            {wallets.filter((w) => ![...MAIN, ...MORE].some((k) => w.name.toLowerCase().includes(k.match))).map((w, i) => (
+              <WalletButton key={w.name} name={w.name} logo={w.icon} busy={busy} onClick={() => go(w)} delay={310 + i * 70} />
+            ))}
+            <button onClick={() => setMore((m) => !m)} aria-expanded={more}
+              className="group flex h-[52px] w-full items-center gap-3 border border-line px-4 text-left text-[15px] text-muted transition-all hover:border-lav hover:text-ink [animation:fadeUp_.5s_ease-out_both]" style={{ animationDelay: '320ms' }}>
+              <span className="flex -space-x-1.5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={w.icon} alt="" className="size-6" />
-                <span className="flex-1">{w.name}</span>
-                <span className="font-mono text-[10.5px] uppercase tracking-[0.1em] text-ok">{busy === w.name ? <span className="blink text-lav">Check your wallet</span> : 'Detected'}</span>
-                <span className="text-lav opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100">→</span>
-              </button>
-            )) : (
-              <>
-                <div className="border border-line bg-surface px-4 py-3 text-[13.5px] text-muted">No Solana wallet found in this browser. Install one, then reload this page.</div>
-                {INSTALL.map((i, n) => (
-                  <a key={i.name} href={i.url} target="_blank" rel="noreferrer"
-                    className="group flex h-[52px] items-center gap-3 border border-line px-4 text-[15px] text-muted transition-all hover:border-lav hover:text-ink [animation:fadeUp_.5s_ease-out_both]" style={{ animationDelay: `${100 + n * 70}ms` }}>
-                    {i.name}<span className="ml-auto inline-flex items-center gap-1 font-mono text-[10.5px] uppercase tracking-[0.1em] text-faint group-hover:text-lav">Install<ArrowUpRight size={11} /></span>
-                  </a>
-                ))}
-              </>
-            )}
+                {MORE.slice(0, 4).map((k) => <img key={k.name} src={k.logo} alt="" className="size-6 border-2 border-page bg-page" />)}
+              </span>
+              <span className="flex-1">More wallets</span>
+              <span className={`font-mono text-[13px] transition-transform ${more ? 'rotate-90' : ''}`}>›</span>
+            </button>
+            <div className={`grid transition-[grid-template-rows] duration-300 ${more ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
+              <div className="space-y-2 overflow-hidden">
+                {MORE.map((k) => <WalletRow key={k.name} k={k} wallets={wallets} busy={busy} go={go} delay={0} />)}
+                <p className="px-1 pt-1 text-[12px] text-faint">Using another Solana wallet? Any wallet that supports the Wallet Standard shows up here automatically once installed.</p>
+              </div>
+            </div>
           </div>
           {error && <p className="mt-3 border-l-2 border-bad pl-3 text-[13px] text-bad">{error}</p>}
 
@@ -108,7 +117,7 @@ export default function AuthScreen({ mode }: { mode: 'login' | 'signup' }) {
           )}
 
           <p className="mt-8 text-[12.5px] leading-relaxed text-faint">
-            Warden never asks for a seed phrase or private key. {signup ? 'Monitoring is free to start.' : 'Email sign-in is not available yet.'}
+            Warden never asks for a seed phrase or private key. By continuing you agree to the <Link href="/terms" className="underline decoration-line-strong underline-offset-2 hover:text-lav">Terms</Link> and <Link href="/privacy" className="underline decoration-line-strong underline-offset-2 hover:text-lav">Privacy Policy</Link>.
           </p>
         </div>
       </div>
@@ -124,4 +133,30 @@ export default function AuthScreen({ mode }: { mode: 'login' | 'signup' }) {
       </div>
     </div>
   )
+}
+
+function WalletButton({ name, logo, busy, onClick, delay, href, tag }: { name: string; logo: string; busy: string | null; onClick?: () => void; delay: number; href?: string; tag?: string }) {
+  const cls = 'group flex h-[52px] w-full items-center gap-3 border px-4 text-left text-[15px] transition-all [animation:fadeUp_.5s_ease-out_both]'
+  const inner = (
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={logo} alt="" className="size-6 object-contain" />
+      <span className="flex-1">{name}</span>
+      {href ? (
+        <span className="inline-flex items-center gap-1 font-mono text-[10.5px] uppercase tracking-[0.1em] text-faint group-hover:text-lav">{tag}<ArrowUpRight size={11} /></span>
+      ) : (
+        <span className="font-mono text-[10.5px] uppercase tracking-[0.1em] text-ok">{busy === name ? <span className="blink text-lav">Check your wallet</span> : 'Detected'}</span>
+      )}
+      {!href && <span className="text-lav opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100">→</span>}
+    </>
+  )
+  if (href) return <a href={href} target="_blank" rel="noreferrer" className={`${cls} border-line text-muted hover:border-lav hover:text-ink`} style={{ animationDelay: `${delay}ms` }}>{inner}</a>
+  return <button disabled={!!busy} onClick={onClick} className={`${cls} border-line-strong bg-surface hover:border-lav hover:bg-sunken disabled:opacity-60`} style={{ animationDelay: `${delay}ms` }}>{inner}</button>
+}
+
+function WalletRow({ k, wallets, busy, go, delay }: { k: Known; wallets: StdWallet[]; busy: string | null; go: (w: StdWallet) => void; delay: number }) {
+  const w = wallets.find((x) => x.name.toLowerCase().includes(k.match))
+  if (w) return <WalletButton name={w.name} logo={k.logo} busy={busy} onClick={() => go(w)} delay={delay} />
+  const mobileLink = isMobile() && k.deeplink && typeof window !== 'undefined' ? k.deeplink(window.location.href, window.location.origin) : null
+  return <WalletButton name={k.name} logo={k.logo} busy={busy} delay={delay} href={mobileLink ?? k.install} tag={mobileLink ? 'Open in app' : 'Install'} />
 }

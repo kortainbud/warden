@@ -3,6 +3,7 @@ import '@fontsource-variable/inter/opsz.css'
 import '@fontsource-variable/geist-mono'
 import '@fontsource-variable/source-serif-4'
 import './globals.css'
+import CookieNotice from '@/components/CookieNotice'
 import { GeistPixelSquare } from 'geist/font/pixel'
 
 export const metadata: Metadata = {
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={GeistPixelSquare.variable}>
-      <body className="min-h-dvh bg-page text-ink">{children}</body>
+      <body className="min-h-dvh bg-page text-ink">{children}<CookieNotice /></body>
     </html>
   )
 }
