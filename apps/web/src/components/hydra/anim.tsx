@@ -234,18 +234,18 @@ export function GrowingTree({ className = '' }: { className?: string }) {
         if (depth < 2) px.push({ x: Math.round(cx) + 1, y: Math.round(cy), d: d0 + i })
         ang += (rnd() - 0.5) * 0.18
       }
-      if (depth >= 5) return
+      if (depth >= 6) return
       const n = depth < 2 ? 2 : 2 + (rnd() > 0.5 ? 1 : 0)
       for (let k = 0; k < n; k++) branch(cx, cy, ang + (k - (n - 1) / 2) * (0.55 + rnd() * 0.3), Math.max(4, len * (0.62 + rnd() * 0.2)), depth + 1, d0 + len)
     }
-    branch(60, 118, -Math.PI / 2, 26, 0, 0)
+    branch(80, 158, -Math.PI / 2, 34, 0, 0)
     tree.current = px
   }, [])
   useVisibleLoop(wrap, (t) => {
     const c = canvas.current
     if (!c) return
     const ctx = c.getContext('2d')!
-    c.width = 120; c.height = 120
+    c.width = 160; c.height = 160
     if (!start.current) start.current = t
     const maxD = Math.max(1, ...tree.current.map((p) => p.d))
     const k = reduced() ? 1 : ((t - start.current) % 6500) / 4500
@@ -257,7 +257,7 @@ export function GrowingTree({ className = '' }: { className?: string }) {
       ctx.fillRect(p.x, p.y, 1, 1)
     }
   })
-  return <div ref={wrap} className={className}><canvas ref={canvas} className="h-full w-full" style={{ imageRendering: 'pixelated' }} aria-hidden /></div>
+  return <div ref={wrap} className={className}><canvas ref={canvas} className="h-full w-full object-contain object-bottom" style={{ imageRendering: 'pixelated' }} aria-hidden /></div>
 }
 
 /** Count up (with a pixel scramble on the way) when scrolled into view. */
@@ -420,4 +420,58 @@ export function BudgetBar({ parts }: { parts: [string, number, string][] }) {
 export function GrowLine({ className = '', delay = 0 }: { className?: string; delay?: number }) {
   const [ref, on] = useInView<HTMLSpanElement>()
   return <span ref={ref} className={`block h-[2px] bg-[#c8b9ff] transition-[width] duration-700 ease-out ${className}`} style={{ width: on ? '100%' : '0%', transitionDelay: `${delay}ms` }} />
+}
+
+
+/** Footer: a technical field. Grid of nodes, packets routing along the lines, cells flickering, a scan line. */
+export function DataField({ className = '' }: { className?: string }) {
+  const wrap = useRef<HTMLDivElement>(null)
+  const canvas = useRef<HTMLCanvasElement>(null)
+  const packets = useRef<{ x: number; y: number; dx: number; dy: number; life: number; c: string }[]>([])
+  useVisibleLoop(wrap, (t) => {
+    const c = canvas.current
+    if (!c) return
+    const ctx = c.getContext('2d')!
+    const dpr = Math.min(2, devicePixelRatio || 1), W = c.clientWidth, H = c.clientHeight
+    if (c.width !== Math.round(W * dpr)) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr) }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    ctx.clearRect(0, 0, W, H)
+    const G = 22, cols = Math.floor(W / G), rows = Math.floor(H / G)
+    const ox = (W - cols * G) / 2, oy = (H - rows * G) / 2
+    // grid lines with a perspective-free fade toward the edges
+    for (let x = 0; x <= cols; x++) { ctx.fillStyle = `rgba(124,92,255,${x % 4 === 0 ? 0.16 : 0.06})`; ctx.fillRect(ox + x * G, oy, 1, rows * G) }
+    for (let y = 0; y <= rows; y++) { ctx.fillStyle = `rgba(124,92,255,${y % 4 === 0 ? 0.16 : 0.06})`; ctx.fillRect(ox, oy + y * G, cols * G, 1) }
+    // flickering cells and nodes
+    for (let y = 0; y <= rows; y++) for (let x = 0; x <= cols; x++) {
+      const h = Math.abs(Math.sin(x * 91.7 + y * 47.3) * 43758.5) % 1
+      const on = Math.sin(t / 700 + h * 40) > 0.92
+      if (h > 0.9 || on) { ctx.fillStyle = on ? 'rgba(200,185,255,0.9)' : 'rgba(200,185,255,0.25)'; ctx.fillRect(ox + x * G - 1.5, oy + y * G - 1.5, 3, 3) }
+      if (h > 0.985) { ctx.fillStyle = `rgba(124,92,255,${0.12 + 0.1 * Math.sin(t / 400 + h * 9)})`; ctx.fillRect(ox + x * G + 1, oy + y * G + 1, G - 1, G - 1) }
+    }
+    // packets routing along the grid, turning at nodes
+    if (!reduced() && packets.current.length < 14 && Math.random() < 0.15) {
+      const horiz = Math.random() < 0.6
+      packets.current.push({ x: Math.floor(Math.random() * cols), y: Math.floor(Math.random() * rows), dx: horiz ? (Math.random() < 0.5 ? 1 : -1) : 0, dy: horiz ? 0 : (Math.random() < 0.5 ? 1 : -1), life: 60 + Math.random() * 120, c: Math.random() < 0.2 ? C.blue : Math.random() < 0.5 ? C.lav : C.accent })
+    }
+    for (let i = packets.current.length - 1; i >= 0; i--) {
+      const p = packets.current[i]!
+      p.x += p.dx * 0.12; p.y += p.dy * 0.12; p.life--
+      const atNode = Math.abs(p.x - Math.round(p.x)) < 0.07 && Math.abs(p.y - Math.round(p.y)) < 0.07
+      if (atNode && Math.random() < 0.18) { const turn = p.dx ? [0, Math.random() < 0.5 ? 1 : -1] : [Math.random() < 0.5 ? 1 : -1, 0]; p.dx = turn[0]!; p.dy = turn[1]!; p.x = Math.round(p.x); p.y = Math.round(p.y) }
+      const px = ox + p.x * G, py = oy + p.y * G
+      const g = ctx.createLinearGradient(px - p.dx * 40, py - p.dy * 40, px, py)
+      g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, p.c)
+      ctx.strokeStyle = g; ctx.lineWidth = 1.5
+      ctx.beginPath(); ctx.moveTo(px - p.dx * 40, py - p.dy * 40); ctx.lineTo(px, py); ctx.stroke()
+      ctx.fillStyle = p.c; ctx.fillRect(px - 2, py - 2, 4, 4)
+      if (p.life <= 0 || p.x < 0 || p.y < 0 || p.x > cols || p.y > rows) packets.current.splice(i, 1)
+    }
+    // scan line
+    const sy = ((t / 4000) % 1) * H
+    const sg = ctx.createLinearGradient(0, sy - 30, 0, sy)
+    sg.addColorStop(0, 'rgba(124,92,255,0)'); sg.addColorStop(1, 'rgba(124,92,255,0.18)')
+    ctx.fillStyle = sg; ctx.fillRect(0, sy - 30, W, 30)
+    ctx.fillStyle = 'rgba(200,185,255,0.35)'; ctx.fillRect(0, sy, W, 1)
+  })
+  return <div ref={wrap} className={className}><canvas ref={canvas} className="h-full w-full" aria-hidden /></div>
 }

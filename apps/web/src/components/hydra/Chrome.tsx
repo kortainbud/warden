@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { ArrowUpRight } from '@/components/icons'
 import { DoubleRule, PixelMark } from './bits'
-import { FooterField } from './anim'
+import { DataField, FooterField } from './anim'
 
 const NAV: [string, string][] = [['/#architecture', 'Architecture'], ['/#use-cases', 'Use Cases'], ['/#security', 'Security'], ['/#pricing', 'Pricing'], ['/docs', 'Documentation']]
 
@@ -54,9 +54,10 @@ export function Footer() {
               ))}
             </div>
           </div>
-          <div className="flex flex-col justify-between border-t border-white/10 px-6 py-10 text-[13px] text-white/55 sm:px-8 lg:border-l lg:border-t-0">
-            <div className="flex flex-wrap gap-6"><Link href="/docs" className="hover:text-white">Documentation ↗</Link><Link href="/app" className="hover:text-white">Dashboard ↗</Link></div>
-            <div className="mt-10">Warden can block a transaction. It can never move your funds.<br />© 2026 Warden</div>
+          <div className="flex flex-col border-t border-white/10 text-[13px] text-white/55 lg:border-l lg:border-t-0">
+            <div className="flex flex-wrap gap-6 border-b border-white/10 px-6 py-5 sm:px-8"><Link href="/docs" className="hover:text-white">Documentation ↗</Link><Link href="/app" className="hover:text-white">Dashboard ↗</Link><a href="mailto:contactharryu@gmail.com" className="hover:text-white">Contact ↗</a></div>
+            <DataField className="min-h-[200px] flex-1" />
+            <div className="border-t border-white/10 px-6 py-5 sm:px-8">Warden can block a transaction. It can never move your funds.<br />© 2026 Warden</div>
           </div>
         </div>
       </div>

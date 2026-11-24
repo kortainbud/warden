@@ -180,7 +180,8 @@ interface HeliusWebhook {
 /** Point one enhanced webhook at our endpoint with the full set of watched addresses. */
 export async function syncWebhook(url: string, addresses: string[], authHeader: string) {
   const list = await request<HeliusWebhook[]>((k) => `https://api-mainnet.helius-rpc.com/v0/webhooks?api-key=${k}`)
-  const mine = list.find((w) => w.webhookURL === url)
+  // Same endpoint path on any Warden host: re-point it rather than leave a stale one behind.
+  const mine = list.find((w) => w.webhookURL === url) ?? list.find((w) => /warden/i.test(w.webhookURL) && w.webhookURL.endsWith('/api/hooks/helius'))
   const body = JSON.stringify({
     webhookURL: url,
     transactionTypes: ['ANY'],

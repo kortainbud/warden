@@ -179,7 +179,7 @@ export default function Home() {
       {/* Violet block, tree, hexagons */}
       <Wrap>
         <div className="grid grid-cols-[minmax(0,1fr)] border-x border-white/10 lg:grid-cols-2">
-          <div className="relative hidden lg:block"><GrowingTree className="absolute bottom-0 right-6 h-[220px] w-[220px]" /></div>
+          <div className="relative hidden min-h-[440px] lg:block"><GrowingTree className="absolute inset-[10%]" /></div>
           <Reveal className="px-6 py-20 sm:px-0">
             <h2 className={`${px} max-w-[520px] text-[34px] leading-[1.1] sm:text-[48px]`}>Provenance-Native Security For Agents</h2>
             <div className={`${px} mt-2 max-w-[560px] bg-[#7c5cff] px-4 py-3 text-[30px] leading-[1.12] sm:text-[44px]`}>Purpose-Built To Catch The Payments Nobody Asked For, And Show Why Agents Tried.</div>
@@ -350,7 +350,7 @@ export default function Home() {
             <h2 className={`${px} mx-auto mt-6 max-w-[760px] text-[40px] leading-[1.06] sm:text-[60px]`}>Got A Question? <span className="shimmer">Talk To Us.</span></h2>
             <p className="mx-auto mt-6 max-w-[520px] text-[17px] text-white/60">Running agents with real money? Tell us what they do and we’ll help you set up monitoring and shadow mode in an afternoon.</p>
             <div className="mt-9 flex justify-center">
-              <a href={process.env.NEXT_PUBLIC_CONTACT_EMAIL ? `mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL}` : '/docs'} className="px-btn inline-flex h-[43px] items-center bg-white px-[18px] text-[16px] text-[#0b0716]">Contact us</a>
+              <a href={`mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'contactharryu@gmail.com'}`} className="px-btn inline-flex h-[43px] items-center bg-white px-[18px] text-[16px] text-[#0b0716]">Contact us</a>
               <Link href="/signup" className="px-btn inline-flex h-[43px] items-center bg-[#7c5cff] px-[18px] text-[16px] text-white">Start monitoring</Link>
             </div>
           </Reveal>
