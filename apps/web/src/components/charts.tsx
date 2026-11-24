@@ -24,7 +24,7 @@ export function DailyBars({ days, n = 14 }: { days: { day: string; outflow_usd: 
       <div className="flex h-28 items-end gap-[3px]" onMouseLeave={() => setHover(null)}>
         {slots.map((s, i) => (
           <div key={s.day} className="flex h-full flex-1 items-end" onMouseEnter={() => setHover(i)}>
-            <div className={`w-full rounded-[3px] ${hover === i ? 'bg-brand' : 'bg-brand/70'}`} style={{ height: `${s.usd ? Math.max(3, (s.usd / max) * 100) : 1.5}%`, opacity: s.usd ? 1 : 0.25 }} />
+            <div className={`w-full rounded-[3px] ${hover === i ? 'bg-accent' : 'bg-accent/70'}`} style={{ height: `${s.usd ? Math.max(3, (s.usd / max) * 100) : 1.5}%`, opacity: s.usd ? 1 : 0.25 }} />
           </div>
         ))}
       </div>

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import '@fontsource-variable/geist'
+import '@fontsource-variable/inter/opsz.css'
 import '@fontsource-variable/geist-mono'
 import './globals.css'
 

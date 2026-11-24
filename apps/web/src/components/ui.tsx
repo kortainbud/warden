@@ -9,7 +9,7 @@ export const cx = (...c: (string | false | null | undefined)[]) => c.filter(Bool
 
 type BtnVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
 const BTN: Record<BtnVariant, string> = {
-  primary: 'bg-brand text-brand-ink hover:bg-[#16302a] border border-brand',
+  primary: 'bg-brand text-brand-ink hover:bg-brand-hover border border-brand',
   secondary: 'bg-surface text-ink border border-line-strong hover:border-ink-2/40',
   ghost: 'text-ink-2 hover:bg-sunken border border-transparent',
   danger: 'bg-bad text-white border border-bad hover:bg-[#842823]',
@@ -20,7 +20,7 @@ export function Button({ variant = 'secondary', size = 'md', className, ...p }: 
     <button
       {...p}
       className={cx(
-        'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50',
+        'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-[8px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50',
         size === 'sm' ? 'h-8 px-3 text-[13px]' : 'h-10 px-4 text-[14px]',
         BTN[variant],
         className,
@@ -34,7 +34,7 @@ export function ButtonLink({ variant = 'secondary', size = 'md', className, ...p
     <Link
       {...p}
       className={cx(
-        'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full font-medium transition-colors',
+        'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-[8px] font-medium transition-colors',
         size === 'sm' ? 'h-8 px-3 text-[13px]' : 'h-10 px-4 text-[14px]',
         BTN[variant],
         className,
@@ -202,7 +202,7 @@ export function Tabs<T extends string>({ value, onChange, items }: { value: T; o
 export function Toggle({ checked, onChange, label, disabled }: { checked: boolean; onChange: (v: boolean) => void; label: string; disabled?: boolean }) {
   return (
     <button type="button" role="switch" aria-checked={checked} aria-label={label} disabled={disabled} onClick={() => onChange(!checked)}
-      className={cx('relative inline-flex h-6 w-10 shrink-0 items-center rounded-full border transition-colors disabled:opacity-50', checked ? 'border-brand bg-brand' : 'border-line-strong bg-sunken')}>
+      className={cx('relative inline-flex h-6 w-10 shrink-0 items-center rounded-full border transition-colors disabled:opacity-50', checked ? 'border-accent bg-accent' : 'border-line-strong bg-sunken')}>
       <span className={cx('inline-block size-[18px] rounded-full bg-white transition-transform', checked ? 'translate-x-[19px]' : 'translate-x-[2px]')} />
     </button>
   )
