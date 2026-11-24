@@ -155,7 +155,7 @@ on('GET', 'wallets', 'any', async ({ owner }) => {
   return reply(200, {
     data: ws.map((w, i) => {
       const s = stats.find((x) => x.wallet_id === w.id)
-      return { ...walletView(w), mode: pols[i]!.policy.mode, template: pols[i]!.template, events: Number(s?.events ?? 0), outflow_usd_24h: Number(s?.out24 ?? 0), last_activity: s?.last_ts ?? null }
+      return { ...walletView(w), mode: pols[i]!.policy.mode, template: pols[i]!.template, daily_cap_usd: pols[i]!.policy.dailyCapUsd, events: Number(s?.events ?? 0), outflow_usd_24h: Number(s?.out24 ?? 0), last_activity: s?.last_ts ?? null }
     }),
   })
 })

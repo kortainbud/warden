@@ -9,7 +9,7 @@ import { useApi, send, get } from '@/lib/api'
 import { dateTime, short, solscan, timeAgo, usd } from '@/lib/format'
 import type { CheckRow, EventRow, WalletDetail } from '@/lib/types'
 import Back from '@/components/Back'
-import { Address, Button, ButtonLink, Card, CardHeader, Empty, ErrorNote, Field, Input, LoadingBlock, PageHeader, Pill, Select, Spinner, Stat, Tabs, Textarea, Toggle, cx } from '@/components/ui'
+import { Address, Button, ButtonLink, Card, CardHeader, Empty, ErrorNote, Field, Input, LoadingBlock, PageHeader, Pill, Select, Spinner, Stat, StatStrip, Tabs, Textarea, Toggle, cx } from '@/components/ui'
 import { CheckLine } from '@/components/checks'
 import { DailyBars } from '@/components/charts'
 
@@ -55,20 +55,18 @@ function Wallet({ id }: { id: string }) {
       />
       {note && <div className="mb-4"><ErrorNote error={{ message: note }} /></div>}
       {w.frozen && (
-        <div className="mb-6 rounded-[10px] border border-bad/25 bg-bad-bg px-4 py-3 text-[13.5px] text-bad">
+        <div className="mb-6 rounded-[14px] border border-bad/25 bg-bad-bg px-4 py-3 text-[13.5px] text-bad">
           Frozen {timeAgo(w.frozen_at)}. Every check for this wallet is blocked.
           {w.kind === 'monitor' && ' This wallet is monitor-only: transactions signed without Warden still go through, so move funds with your own key if it is compromised.'}
         </div>
       )}
 
-      <div className="mb-6 grid grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-line bg-line lg:grid-cols-4">
-        {[
+      <div className="mb-6"><StatStrip>{[
           <Stat key="a" label="Out, 24h" value={usd(w.stats.outflow_usd_24h)} sub={w.policy.dailyCapUsd !== null ? `Daily cap ${usd(w.policy.dailyCapUsd)}` : 'No daily cap'} />,
           <Stat key="b" label="Out, 30d" value={usd(w.stats.outflow_usd_30d, { compact: true })} />,
           <Stat key="c" label="Transactions" value={w.stats.events.toLocaleString()} sub="Last 30 days and since" />,
           <Stat key="d" label="Recipients paid" value={w.stats.recipients} />,
-        ].map((s, i) => <div key={i} className="bg-surface px-4 py-4 sm:px-5">{s}</div>)}
-      </div>
+        ]}</StatStrip></div>
 
       <Tabs<Tab> value={tab} onChange={setTab} items={[
         { value: 'activity', label: 'Activity' }, { value: 'checks', label: 'Checks' }, { value: 'spend', label: 'Spend' },

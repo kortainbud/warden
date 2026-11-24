@@ -2,26 +2,32 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState, type ReactNode } from 'react'
-import {
-  Bell, BellRinging, ChartLineUp, Flask, GearSix, HandPalm, List, ListChecks, ShieldWarning, SignOut, Snowflake, Wallet, X,
-} from '@/components/icons'
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { Mark } from './brand'
+import { PixelIcon, PixelMeter, type PixelName } from './pixel'
+import Dither from './Dither'
 import { Button, cx } from './ui'
 import { useApi, send } from '@/lib/api'
 import { useSession } from '@/lib/session'
-import { short } from '@/lib/format'
+import { isAddressLike, short } from '@/lib/format'
+import type { WalletRow } from '@/lib/types'
 import SignIn from './SignIn'
 
-const NAV = [
-  { href: '/app', label: 'Overview', icon: ChartLineUp, exact: true },
-  { href: '/app/approvals', label: 'Approvals', icon: HandPalm, badge: 'holds' as const },
-  { href: '/app/wallets', label: 'Wallets', icon: Wallet },
-  { href: '/app/checks', label: 'Checks', icon: ListChecks },
-  { href: '/app/test', label: 'Test a transaction', icon: Flask },
-  { href: '/app/threats', label: 'Threat Network', icon: ShieldWarning },
-  { href: '/app/alerts', label: 'Alerts', icon: Bell, badge: 'alerts' as const },
-  { href: '/app/settings', label: 'Settings', icon: GearSix },
+const NAV: { href: string; label: string; icon: PixelName; exact?: boolean; badge?: 'holds' | 'alerts' }[] = [
+  { href: '/app', label: 'Overview', icon: 'overview', exact: true },
+  { href: '/app/approvals', label: 'Approvals', icon: 'approvals', badge: 'holds' },
+  { href: '/app/wallets', label: 'Wallets', icon: 'wallets' },
+  { href: '/app/checks', label: 'Checks', icon: 'checks' },
+  { href: '/app/test', label: 'Test a transaction', icon: 'test' },
+  { href: '/app/threats', label: 'Threat Network', icon: 'shield' },
+  { href: '/app/alerts', label: 'Alerts', icon: 'alerts', badge: 'alerts' },
+  { href: '/app/settings', label: 'Settings', icon: 'settings' },
+]
+
+const TITLES: [RegExp, string][] = [
+  [/^\/app\/approvals/, 'Approvals'], [/^\/app\/wallets\/.+/, 'Wallet'], [/^\/app\/wallets/, 'Wallets'], [/^\/app\/checks\/.+/, 'Check'],
+  [/^\/app\/checks/, 'Checks'], [/^\/app\/test/, 'Test a transaction'], [/^\/app\/threats/, 'Threat Network'], [/^\/app\/alerts/, 'Alerts'],
+  [/^\/app\/settings/, 'Settings'], [/^\/app$/, 'Overview'],
 ]
 
 // Remember in-app navigation so "Back" can return to the exact origin (see Back.tsx).
@@ -41,7 +47,6 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const { address, checked, demo, refresh, signOut } = useSession()
   useEffect(() => { void refresh() }, [refresh])
   useTrackHistory()
-
   if (!checked) return <div className="min-h-dvh bg-page" />
   if (!address) return <SignIn />
   return <Shell address={address} demo={demo} signOut={signOut}>{children}</Shell>
@@ -53,86 +58,164 @@ function Shell({ address, demo, signOut, children }: { address: string; demo: bo
   const [open, setOpen] = useState(false)
   const holds = useApi<{ data: unknown[] }>('checks?status=held&limit=50', { poll: 15_000 })
   const alerts = useApi<{ unread: number }>('alerts?limit=1', { poll: 15_000 })
+  const wallets = useApi<{ data: WalletRow[] }>('wallets', { poll: 30_000 })
   const counts = { holds: holds.data?.data.length ?? 0, alerts: alerts.data?.unread ?? 0 }
+  const reloadWallets = wallets.reload, reloadHolds = holds.reload
   useEffect(() => setOpen(false), [path])
+  useEffect(() => {
+    const f = () => { void reloadWallets(); void reloadHolds() }
+    window.addEventListener('warden:refresh', f)
+    return () => window.removeEventListener('warden:refresh', f)
+  }, [reloadWallets, reloadHolds])
+  const title = TITLES.find(([re]) => re.test(path))?.[1] ?? 'Warden'
+  const out = async () => { await signOut(); router.push('/') }
 
-  const nav = (
-    <nav className="flex flex-col gap-0.5">
-      {NAV.map(({ href, label, icon: Icon, exact, badge }) => {
-        const active = exact ? path === href : path.startsWith(href)
-        const n = badge ? counts[badge] : 0
-        return (
-          <Link key={href} href={href}
-            className={cx('flex h-9 items-center gap-2.5 rounded-[8px] px-2.5 text-[14px]', active ? 'bg-sunken font-medium text-ink' : 'text-ink-2 hover:bg-sunken/70')}>
-            <Icon size={18} weight={active ? 'fill' : 'regular'} className={active ? 'text-ink' : 'text-muted'} />
-            <span className="flex-1">{label}</span>
-            {n > 0 && <span className={cx('tnum rounded-full px-1.5 text-[11.5px] font-semibold leading-5', badge === 'holds' ? 'bg-warn-bg text-warn' : 'bg-sunken text-ink-2')}>{n}</span>}
-          </Link>
-        )
-      })}
-    </nav>
+  const ws = wallets.data?.data ?? []
+  const enforcing = ws.filter((w) => w.mode === 'enforce').length
+  const frozen = ws.filter((w) => w.frozen).length
+
+  const sidebar = (
+    <>
+      <div className="mt-7 px-3.5">
+        <div className="eyebrow">Workspace</div>
+        <div className="mt-1.5 flex items-baseline justify-between gap-2">
+          <span className="font-mono text-[13px]" title={address}>{demo ? 'Demo owner' : short(address, 5)}</span>
+          <span className={cx('text-[13px] font-medium tabular-nums', frozen ? 'text-bad' : 'text-ink')}>{frozen ? `${frozen} frozen` : `${enforcing}/${ws.length}`}</span>
+        </div>
+        <PixelMeter value={ws.length ? (enforcing / ws.length) * 100 : 0} cols={30} rows={2} cell={4} gap={2} className="mt-2.5" label={`${enforcing} of ${ws.length} wallets enforcing`} />
+        <div className="mt-1.5 text-[11.5px] text-faint">{ws.length ? `${enforcing} of ${ws.length} wallets enforcing` : 'No wallets yet'}</div>
+      </div>
+
+      <nav className="mt-7 space-y-0.5">
+        {NAV.map(({ href, label, icon, exact, badge }) => {
+          const active = exact ? path === href : path.startsWith(href)
+          const n = badge ? counts[badge] : 0
+          return (
+            <Link key={href} href={href} className={cx('flex h-9 items-center gap-3 rounded-full px-3.5 text-[13.5px] transition-colors', active ? 'bg-white text-ink shadow-[0_1px_2px_rgba(16,24,40,0.06)] ring-1 ring-line' : 'text-muted hover:text-ink')}>
+              <PixelIcon name={icon} size={14} color={active ? '#0c68eb' : 'currentColor'} />
+              {label}
+              {n > 0 && <span className={cx('ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 font-mono text-[10.5px] font-medium', badge === 'holds' ? 'bg-[#f59e0b] text-white' : 'bg-ink text-white')}>{n}</span>}
+            </Link>
+          )
+        })}
+      </nav>
+
+      {ws.length > 0 && (
+        <>
+          <div className="eyebrow px-3.5 pb-2 pt-6">Wallets</div>
+          {ws.slice(0, 6).map((w) => (
+            <Link key={w.id} href={`/app/wallets/${w.id}`} className={cx('flex h-8 items-center gap-2 rounded-full px-3.5 pl-[42px] text-[12.5px]', path.startsWith(`/app/wallets/${w.id}`) ? 'text-ink' : 'text-muted hover:text-ink')}>
+              <span className="truncate">{w.label}</span>
+              <span className={cx('ml-auto font-mono text-[10px] uppercase tracking-[0.08em]', w.frozen ? 'text-bad' : w.mode === 'enforce' ? 'text-ok' : 'text-info')}>{w.frozen ? 'frozen' : w.mode}</span>
+            </Link>
+          ))}
+        </>
+      )}
+    </>
   )
 
-  return (
-    <div className="min-h-dvh bg-page">
-      <div className="mx-auto flex max-w-[1400px]">
-        <aside className="sticky top-0 hidden h-dvh w-[240px] shrink-0 flex-col border-r border-line px-3 py-4 lg:flex">
-          <Link href="/" className="mb-5 flex items-center gap-2 px-2 text-[15px] font-semibold tracking-[-0.02em]"><Mark size={20} />Warden</Link>
-          {nav}
-          <div className="mt-auto space-y-2 px-1">
-            <KillSwitch />
-            <Account address={address} demo={demo} signOut={async () => { await signOut(); router.push('/') }} />
-          </div>
-        </aside>
-
-        <div className="min-w-0 flex-1">
-          <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-page/95 px-4 backdrop-blur lg:hidden">
-            <Link href="/app" className="flex items-center gap-2 text-[15px] font-semibold"><Mark size={20} />Warden</Link>
-            <div className="flex items-center gap-1">
-              <Link href="/app/alerts" className="relative inline-flex size-9 items-center justify-center rounded-full hover:bg-sunken" aria-label="Alerts">
-                <BellRinging size={19} />
-                {counts.alerts > 0 && <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-bad" />}
-              </Link>
-              <button onClick={() => setOpen(true)} className="inline-flex size-9 items-center justify-center rounded-full hover:bg-sunken" aria-label="Menu"><List size={20} /></button>
-            </div>
-          </header>
-          {open && (
-            <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true">
-              <div className="absolute inset-0 bg-ink/30" onClick={() => setOpen(false)} />
-              <div className="absolute inset-y-0 right-0 flex w-[280px] max-w-[85vw] flex-col bg-page px-3 py-4">
-                <div className="mb-4 flex items-center justify-between px-2">
-                  <span className="text-[15px] font-semibold">Menu</span>
-                  <button onClick={() => setOpen(false)} aria-label="Close" className="inline-flex size-8 items-center justify-center rounded-full hover:bg-sunken"><X size={18} /></button>
-                </div>
-                {nav}
-                <div className="mt-auto space-y-2 px-1">
-                  <KillSwitch />
-                  <Account address={address} demo={demo} signOut={async () => { await signOut(); router.push('/') }} />
-                </div>
-              </div>
-            </div>
-          )}
-          {demo && (
-            <div className="border-b border-info/20 bg-info-bg px-4 py-2 text-center text-[12.5px] text-info">
-              Demo workspace with fictional wallets and data. Nothing here touches the chain.
-            </div>
-          )}
-          <main className="px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</main>
+  const footer = (
+    <div className="space-y-2.5">
+      <KillSwitch />
+      <div className="flex items-center gap-2.5 rounded-full border border-line bg-white py-1.5 pl-2 pr-1.5">
+        <span className="inline-flex size-6 items-center justify-center rounded-full bg-ink"><PixelIcon name="wallets" size={12} color="#ffffff" /></span>
+        <span className="min-w-0 flex-1 truncate font-mono text-[12px]" title={address}>{demo ? 'demo' : short(address, 4)}</span>
+        {!demo && <button onClick={out} className="rounded-full px-2.5 py-1 text-[11.5px] text-faint hover:text-ink">Sign out</button>}
+      </div>
+      <div className="relative overflow-hidden rounded-[14px] border border-line">
+        <Dither className="absolute inset-0 h-full w-full" cell={3} />
+        <div className="relative bg-gradient-to-r from-white via-white/85 to-white/20 p-4">
+          <div className="text-[14px] font-medium">Protected wallets</div>
+          <p className="mt-1 text-[12px] leading-snug text-ink-2">Two signatures: your agent’s and Warden’s. Warden can never move funds alone.</p>
+          <div className="mt-3 inline-flex rounded-full bg-ink px-3 py-1 font-mono text-[10px] uppercase tracking-[0.1em] text-white">After audit</div>
         </div>
       </div>
     </div>
   )
+
+  return (
+    <div className="min-h-dvh bg-page lg:flex">
+      <aside className="sticky top-0 hidden h-dvh w-[248px] shrink-0 flex-col px-3 pb-3 pt-5 lg:flex">
+        <Link href="/" className="flex items-center gap-2 px-3.5 text-[18px] font-semibold tracking-[-0.03em]"><Mark size={20} />warden</Link>
+        <div className="flex-1 overflow-y-auto [scrollbar-width:none]">{sidebar}</div>
+        {footer}
+      </aside>
+
+      <div className="min-w-0 flex-1 lg:py-3 lg:pr-3">
+        <div className="min-h-dvh bg-[#fcfcfd] lg:min-h-[calc(100dvh-24px)] lg:rounded-[18px] lg:border lg:border-line">
+          <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-line bg-[#fcfcfd]/90 px-4 backdrop-blur lg:rounded-t-[18px] lg:px-8">
+            <Link href="/app" className="flex items-center gap-2 lg:hidden" aria-label="Warden"><Mark size={22} /></Link>
+            <span className="truncate text-[14px] text-muted">{title}</span>
+            <div className="ml-auto flex items-center gap-2">
+              <SearchBox wallets={ws} />
+              <Link href="/app/alerts" className="relative inline-flex size-9 items-center justify-center rounded-full border border-line-strong bg-white text-muted hover:text-ink" aria-label="Alerts" title="Alerts">
+                <PixelIcon name="alerts" size={13} />
+                {counts.alerts > 0 && <span className="absolute -right-0.5 -top-0.5 size-2.5 rounded-full border-2 border-white bg-bad" />}
+              </Link>
+              <Link href="/app/test" className="hidden h-9 items-center gap-2 rounded-full bg-ink px-4 text-[13px] font-medium text-white hover:bg-brand-hover sm:inline-flex">
+                <PixelIcon name="spark" size={12} color="#5a9bff" />Test a transaction
+              </Link>
+              <button onClick={() => setOpen(true)} className="inline-flex size-9 items-center justify-center rounded-full border border-line-strong bg-white lg:hidden" aria-label="Menu">
+                <span className="space-y-[3px]"><span className="block h-px w-3.5 bg-ink" /><span className="block h-px w-3.5 bg-ink" /><span className="block h-px w-3.5 bg-ink" /></span>
+              </button>
+            </div>
+          </header>
+          <nav className="flex gap-1 overflow-x-auto border-b border-line px-3 py-2 [scrollbar-width:none] lg:hidden">
+            {NAV.map(({ href, label, exact, badge }) => {
+              const active = exact ? path === href : path.startsWith(href)
+              const n = badge ? counts[badge] : 0
+              return <Link key={href} href={href} className={cx('whitespace-nowrap rounded-full px-3.5 py-1.5 text-[13px]', active ? 'bg-ink text-white' : 'text-muted')}>{label}{n > 0 ? ` · ${n}` : ''}</Link>
+            })}
+          </nav>
+          {demo && <div className="border-b border-line bg-info-bg px-4 py-2 text-center text-[12.5px] text-info">Demo workspace with fictional wallets and data. Nothing here touches the chain.</div>}
+          <main className="mx-auto max-w-[1240px] px-4 py-8 lg:px-8 lg:py-10">{children}</main>
+        </div>
+      </div>
+
+      {open && (
+        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true">
+          <div className="absolute inset-0 bg-ink/30" onClick={() => setOpen(false)} />
+          <div className="absolute inset-y-0 right-0 flex w-[290px] max-w-[88vw] flex-col overflow-y-auto bg-page px-3 pb-3 pt-4">
+            <div className="flex items-center justify-between px-3.5">
+              <span className="flex items-center gap-2 text-[17px] font-semibold"><Mark size={18} />warden</span>
+              <button onClick={() => setOpen(false)} aria-label="Close" className="text-[13px] text-muted">Close</button>
+            </div>
+            <div className="flex-1">{sidebar}</div>
+            <div className="mt-6">{footer}</div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
 }
 
-function Account({ address, demo, signOut }: { address: string; demo: boolean; signOut: () => void }) {
+/** ⌘K: jump to one of your wallets, or look the address up in the Threat Network. */
+function SearchBox({ wallets }: { wallets: WalletRow[] }) {
+  const [v, setV] = useState('')
+  const [err, setErr] = useState(false)
+  const ref = useRef<HTMLInputElement>(null)
+  const router = useRouter()
+  useEffect(() => {
+    const on = (e: KeyboardEvent) => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); ref.current?.focus() } }
+    window.addEventListener('keydown', on)
+    return () => window.removeEventListener('keydown', on)
+  }, [])
+  const submit = (e: FormEvent) => {
+    e.preventDefault()
+    const q = v.trim()
+    const mine = wallets.find((w) => w.address === q || w.label.toLowerCase() === q.toLowerCase())
+    if (mine) { setV(''); router.push(`/app/wallets/${mine.id}`); return }
+    if (!isAddressLike(q)) { setErr(true); return }
+    setV('')
+    ref.current?.blur()
+    router.push(`/app/threats?q=${q}`)
+  }
   return (
-    <div className="flex items-center justify-between gap-2 rounded-[8px] px-2 py-1.5">
-      <div className="min-w-0">
-        <div className="text-[12px] text-muted">{demo ? 'Demo owner' : 'Owner wallet'}</div>
-        <div className="truncate font-mono text-[12.5px]">{short(address)}</div>
-      </div>
-      {!demo && <button onClick={signOut} title="Sign out" aria-label="Sign out" className="inline-flex size-8 items-center justify-center rounded-full text-muted hover:bg-sunken hover:text-ink"><SignOut size={16} /></button>}
-    </div>
+    <form onSubmit={submit} className={cx('hidden h-9 w-72 items-center gap-2 rounded-full border bg-white px-3.5 md:flex', err ? 'border-bad/50' : 'border-line-strong')}>
+      <PixelIcon name="search" size={13} className="text-faint" />
+      <input ref={ref} value={v} onChange={(e) => { setV(e.target.value); setErr(false) }} placeholder="Wallet name or any address" aria-label="Search wallets or look up an address" spellCheck={false} className="min-w-0 flex-1 bg-transparent text-[13px] outline-none placeholder:text-faint" />
+      <kbd className="font-mono text-[10.5px] text-faint">⌘K</kbd>
+    </form>
   )
 }
 
@@ -142,9 +225,9 @@ function KillSwitch() {
   const [msg, setMsg] = useState<string | null>(null)
   if (confirming)
     return (
-      <div className="rounded-[10px] border border-bad/25 bg-bad-bg p-3">
+      <div className="rounded-[14px] border border-bad/25 bg-bad-bg p-3.5">
         <div className="text-[13px] font-medium text-bad">Freeze every wallet?</div>
-        <p className="mt-1 text-[12.5px] text-ink-2">Every check is blocked until you unfreeze. Unfreezing needs your wallet signature.</p>
+        <p className="mt-1 text-[12px] leading-snug text-ink-2">Every check is blocked until you unfreeze. Unfreezing needs your wallet signature.</p>
         <div className="mt-2.5 flex gap-2">
           <Button size="sm" variant="danger" disabled={busy} onClick={async () => {
             setBusy(true)
@@ -161,11 +244,10 @@ function KillSwitch() {
     )
   return (
     <div>
-      <button onClick={() => { setMsg(null); setConfirming(true) }}
-        className="flex h-9 w-full items-center gap-2 rounded-[8px] border border-bad/25 px-2.5 text-[13.5px] font-medium text-bad hover:bg-bad-bg">
-        <Snowflake size={16} weight="bold" />Kill switch
+      <button onClick={() => { setMsg(null); setConfirming(true) }} className="flex h-9 w-full items-center justify-center gap-2 rounded-full border border-bad/30 bg-white text-[13px] font-medium text-bad hover:bg-bad-bg">
+        <PixelIcon name="snow" size={12} />Kill switch
       </button>
-      {msg && <div className="mt-1.5 px-1 text-[12px] text-muted">{msg}</div>}
+      {msg && <div className="mt-1.5 px-2 text-center text-[11.5px] text-muted">{msg}</div>}
     </div>
   )
 }

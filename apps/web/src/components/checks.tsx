@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { ArrowRight, Clock } from '@/components/icons'
 import { Button, Pill, VerdictPill, cx } from './ui'
+import { PixelMeter, meterColor } from './pixel'
 import { send } from '@/lib/api'
 import { short, timeAgo, usd } from '@/lib/format'
 import type { CheckRow, Reason } from '@/lib/types'
@@ -33,14 +34,11 @@ export function ReasonList({ reasons, showInfo = true }: { reasons: Reason[]; sh
 
 export function StageBars({ stages }: { stages: CheckRow['stages'] }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-4">
       {stages.map((s) => (
-        <div key={s.stage} className="flex items-center gap-3 text-[13px]">
-          <span className="w-[110px] shrink-0 text-muted">{stageLabel(s.stage)}</span>
-          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-sunken">
-            <div className={cx('h-full rounded-full', s.score >= 90 ? 'bg-bad' : s.score >= 50 ? 'bg-warn' : s.score > 0 ? 'bg-ink-2/40' : '')} style={{ width: `${Math.max(s.score, 0)}%` }} />
-          </div>
-          <span className="tnum w-8 text-right text-ink-2">{s.score}</span>
+        <div key={s.stage}>
+          <div className="flex items-baseline justify-between text-[13px]"><span className="text-ink-2">{stageLabel(s.stage)}</span><span className="tnum font-mono text-[11px] text-faint">{s.score}</span></div>
+          <PixelMeter value={Math.max(s.score, 0)} cols={40} rows={2} cell={5} gap={2} color={meterColor(s.score)} className="mt-1.5" />
         </div>
       ))}
     </div>
@@ -91,7 +89,7 @@ export function HoldCard({ c, onDone }: { c: CheckRow; onDone: () => void }) {
   }
   const trigger = c.context_excerpt?.trigger
   return (
-    <div className="rounded-[10px] border border-warn/30 bg-surface">
+    <div className="rounded-[14px] border border-warn/35 bg-surface">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 py-2.5 sm:px-5">
         <div className="flex items-center gap-2 text-[13px]">
           <Pill tone="warn">Awaiting approval</Pill>

@@ -55,9 +55,10 @@ export interface WalletRow {
   events: number
   outflow_usd_24h: number
   last_activity: string | null
+  daily_cap_usd: number | null
 }
 
-export interface WalletDetail extends Omit<WalletRow, 'events' | 'outflow_usd_24h' | 'last_activity' | 'mode'> {
+export interface WalletDetail extends Omit<WalletRow, 'events' | 'outflow_usd_24h' | 'last_activity' | 'mode' | 'daily_cap_usd'> {
   policy: Policy
   policy_version: number
   stats: { events: number; outflow_usd_24h: number; outflow_usd_30d: number; recipients: number }
