@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, monospace;
+
+  --color-page: #fafaf9;
+  --color-surface: #ffffff;
+  --color-sunken: #f4f4f2;
+  --color-line: #e7e5e1;
+  --color-line-strong: #d6d3cd;
+  --color-ink: #161614;
+  --color-ink-2: #3d3b37;
+  --color-muted: #6f6c66;
+  --color-faint: #9b978f;
+
+  --color-brand: #1d3a2f;       /* deep pine: primary actions */
+  --color-brand-ink: #f3f6f4;
+
+  --color-ok: #2f6b4f;
+  --color-ok-bg: #eef4f0;
+  --color-warn: #8a5a12;
+  --color-warn-bg: #faf3e6;
+  --color-bad: #9b2f2a;
+  --color-bad-bg: #fbefed;
+  --color-info: #33506e;
+  --color-info-bg: #eef2f6;
+
+  --radius-card: 10px;
+}
+
+html { -webkit-font-smoothing: antialiased; }
+body { background: var(--color-page); color: var(--color-ink); font-family: var(--font-sans); }
+::selection { background: #d8e5dd; }
+.tnum { font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid #4b7a63; outline-offset: 2px; }

@@ -1,0 +1,19 @@
+{
+  "name": "warden",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w web",
+    "demo": "npm run demo -w web",
+    "build": "npm run build -w web",
+    "test": "npm test -w @warden/decoder -w @warden/engine",
+    "typecheck": "tsc -b packages/decoder packages/engine packages/sdk && npm run typecheck -w web"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "typescript": "^5.9.3"
+  }
+}
