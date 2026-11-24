@@ -20,8 +20,8 @@ export function Header() {
             {NAV.map(([h, t]) => <Link key={h} href={h} className="group relative hover:text-white">{t}<span className="absolute -bottom-1 left-0 h-px w-0 bg-[#c8b9ff] transition-all duration-300 group-hover:w-full" /></Link>)}
           </nav>
           <div className="ml-auto flex lg:ml-0">
-            <Link href="/app" className="px-btn hidden h-8 items-center bg-[#2a2142] px-4 text-[15px] text-white hover:bg-[#3a2f58] sm:inline-flex">Log In</Link>
-            <Link href="/app" className="px-btn inline-flex h-8 items-center bg-white px-4 text-[15px] text-[#0b0716]">Sign Up</Link>
+            <Link href="/login" className="px-btn hidden h-8 items-center bg-[#2a2142] px-4 text-[15px] text-white hover:bg-[#3a2f58] sm:inline-flex">Log In</Link>
+            <Link href="/signup" className="px-btn inline-flex h-8 items-center bg-white px-4 text-[15px] text-[#0b0716]">Sign Up</Link>
           </div>
         </div>
       </header>

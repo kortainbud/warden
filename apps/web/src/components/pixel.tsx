@@ -31,7 +31,7 @@ export function PixelIcon({ name, size = 16, color = 'currentColor', className =
 export const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => (v + 0.5) / 16)
 
 /** Strip of square cells; the edge of the fill is dithered. */
-export function PixelMeter({ value, cols = 48, rows = 2, cell = 6, gap = 2, color = '#0c68eb', empty = '#e8e9ee', className = '', label }: {
+export function PixelMeter({ value, cols = 48, rows = 2, cell = 6, gap = 2, color = '#7c5cff', empty = '#231a3d', className = '', label }: {
   value: number; cols?: number; rows?: number; cell?: number; gap?: number; color?: string; empty?: string; className?: string; label?: string
 }) {
   const v = Math.max(0, Math.min(100, value)) / 100
@@ -51,4 +51,4 @@ export function PixelMeter({ value, cols = 48, rows = 2, cell = 6, gap = 2, colo
 }
 
 /** Tone for a 0–100 usage/risk value. */
-export const meterColor = (v: number) => (v >= 90 ? '#d92d20' : v >= 60 ? '#e8890c' : '#0c68eb')
+export const meterColor = (v: number) => (v >= 90 ? '#ff6b8b' : v >= 60 ? '#ffc566' : '#7c5cff')

@@ -43,7 +43,7 @@ export default function Home() {
             </Reveal>
             <Reveal delay={240} className="mt-8 flex">
               <Link href="/docs" className="px-btn inline-flex h-[43px] items-center bg-white px-[18px] text-[16px] text-[#0b0716]">Read the docs</Link>
-              <Link href="/app" className="px-btn inline-flex h-[43px] items-center bg-[#7c5cff] px-[18px] text-[16px] text-white">Sign Up</Link>
+              <Link href="/signup" className="px-btn inline-flex h-[43px] items-center bg-[#7c5cff] px-[18px] text-[16px] text-white">Sign Up</Link>
             </Reveal>
           </div>
           <AsciiShield className="h-[380px] w-full sm:h-[460px] lg:h-[600px]" />
@@ -309,9 +309,9 @@ export default function Home() {
         <Wrap className="mt-14">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { t: 'Free', s: 'Solo builders watching an agent', p: '$0', unit: '/month', f: ['Monitor 1 wallet', 'Decoded activity feed', 'Alerts to webhook and Slack', '7-day history'], cta: 'Start monitoring', href: '/app' },
-              { t: 'Pro', s: 'Indie agents and trading bots', p: '$29', unit: '/wallet/month', f: ['Firewall on up to 10 wallets', 'Intent check and shadow mode', '50k checks included, then $0.002 each', '90-day history'], cta: 'Get started', href: '/app' },
-              { t: 'Teams', s: 'Agent startups, funds and DAOs', p: 'From $750', unit: '/month', f: ['Unlimited wallets', 'Roles and approval routing', 'Audit export and fund tracing', 'SLA'], cta: 'Get started', href: '/app' },
+              { t: 'Free', s: 'Solo builders watching an agent', p: '$0', unit: '/month', f: ['Monitor 1 wallet', 'Decoded activity feed', 'Alerts to webhook and Slack', '7-day history'], cta: 'Start monitoring', href: '/signup' },
+              { t: 'Pro', s: 'Indie agents and trading bots', p: '$29', unit: '/wallet/month', f: ['Firewall on up to 10 wallets', 'Intent check and shadow mode', '50k checks included, then $0.002 each', '90-day history'], cta: 'Get started', href: '/signup' },
+              { t: 'Teams', s: 'Agent startups, funds and DAOs', p: 'From $750', unit: '/month', f: ['Unlimited wallets', 'Roles and approval routing', 'Audit export and fund tracing', 'SLA'], cta: 'Get started', href: '/signup' },
               { t: 'Platform', s: 'Launchpads and frameworks', p: 'Custom', unit: '', f: ['Protection for every agent you launch', 'Volume pricing per active wallet', 'Revenue share'], cta: 'Talk to us', href: '/docs' },
             ].map((c, i) => (
               <div key={c.t} className="h-full [animation:fadeUp_.6s_ease-out_both]" style={{ animationDelay: `${i * 90}ms` }}>
@@ -351,7 +351,7 @@ export default function Home() {
             <p className="mx-auto mt-6 max-w-[520px] text-[17px] text-white/60">Running agents with real money? Tell us what they do and we’ll help you set up monitoring and shadow mode in an afternoon.</p>
             <div className="mt-9 flex justify-center">
               <a href={process.env.NEXT_PUBLIC_CONTACT_EMAIL ? `mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL}` : '/docs'} className="px-btn inline-flex h-[43px] items-center bg-white px-[18px] text-[16px] text-[#0b0716]">Contact us</a>
-              <Link href="/app" className="px-btn inline-flex h-[43px] items-center bg-[#7c5cff] px-[18px] text-[16px] text-white">Start monitoring</Link>
+              <Link href="/signup" className="px-btn inline-flex h-[43px] items-center bg-[#7c5cff] px-[18px] text-[16px] text-white">Start monitoring</Link>
             </div>
           </Reveal>
         </Wrap>

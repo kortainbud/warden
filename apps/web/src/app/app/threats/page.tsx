@@ -23,7 +23,7 @@ export default function ThreatsPage() {
       {loading && !data ? <LoadingBlock /> : <ErrorNote error={error} onRetry={reload} />}
       {data && (
         <>
-          <div className="mb-6 grid grid-cols-1 gap-px overflow-hidden rounded-[14px] border border-line bg-line sm:grid-cols-3">
+          <div className="mb-6 grid grid-cols-1 gap-px overflow-hidden border border-line bg-line sm:grid-cols-3">
             <div className="bg-surface px-5 py-5 sm:px-6"><Stat label="Checks scored" value={data.network.checks.toLocaleString()} /></div>
             <div className="bg-surface px-5 py-5 sm:px-6"><Stat label="Flagged entities" value={data.entities.length} /></div>
             <div className="bg-surface px-5 py-5 sm:px-6"><Stat label="Addresses blocked, 30d" value={data.blocked.length} /></div>

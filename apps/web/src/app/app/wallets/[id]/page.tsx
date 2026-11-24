@@ -55,7 +55,7 @@ function Wallet({ id }: { id: string }) {
       />
       {note && <div className="mb-4"><ErrorNote error={{ message: note }} /></div>}
       {w.frozen && (
-        <div className="mb-6 rounded-[14px] border border-bad/25 bg-bad-bg px-4 py-3 text-[13.5px] text-bad">
+        <div className="mb-6 border border-bad/25 bg-bad-bg px-4 py-3 text-[13.5px] text-bad">
           Frozen {timeAgo(w.frozen_at)}. Every check for this wallet is blocked.
           {w.kind === 'monitor' && ' This wallet is monitor-only: transactions signed without Warden still go through, so move funds with your own key if it is compromised.'}
         </div>
@@ -246,7 +246,7 @@ function PolicyEditor({ w, onSaved }: { w: WalletDetail; onSaved: () => void }) 
             <Toggle checked={p.mode === 'enforce'} label="Enforce mode" disabled={busy} onChange={(v) => { set('mode', v ? 'enforce' : 'shadow'); void save({ mode: v ? 'enforce' : 'shadow' }) }} />
           </div>
           {w.kind === 'monitor' && p.mode === 'enforce' && (
-            <p className="mt-3 rounded-[8px] bg-warn-bg px-3 py-2 text-[12.5px] text-warn">This wallet is monitor-only. Verdicts are enforced for agents that call Warden before signing; transactions signed without Warden cannot be stopped until the wallet is protected.</p>
+            <p className="mt-3 bg-warn-bg px-3 py-2 text-[12.5px] text-warn">This wallet is monitor-only. Verdicts are enforced for agents that call Warden before signing; transactions signed without Warden cannot be stopped until the wallet is protected.</p>
           )}
         </Card>
 
@@ -317,7 +317,7 @@ function Protect({ w }: { w: WalletDetail }) {
           <li><span className="font-medium text-ink">3.</span> The SDK wraps your agent&apos;s signer. Warden co-signs only what passes the firewall, and appends post-state assertions.</li>
           <li><span className="font-medium text-ink">4.</span> Warden&apos;s key can never move funds alone. Your wallet can remove Warden at any time.</li>
         </ol>
-        <div className="mt-5 rounded-[8px] border border-line bg-sunken px-4 py-3 text-[13px] text-ink-2">
+        <div className="mt-5 border border-line bg-sunken px-4 py-3 text-[13px] text-ink-2">
           Protected smart accounts are not live yet. They go to enforce only after an external audit of the smart account setup and the check service. Until then, use shadow mode here to see what Warden would block.
         </div>
       </div>

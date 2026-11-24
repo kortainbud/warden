@@ -5,9 +5,9 @@ import { Footer } from '@/components/hydra/Chrome'
 export const metadata: Metadata = { title: 'Docs' }
 
 const Code = ({ children }: { children: string }) => (
-  <pre className="my-4 overflow-x-auto rounded-[10px] border border-line bg-[#14201b] p-4 font-mono text-[12.5px] leading-relaxed text-[#dfe8e2]">{children}</pre>
+  <pre className="my-4 overflow-x-auto rounded-[10px] border border-line bg-[#120b22] p-4 font-mono text-[12.5px] leading-relaxed text-[#d9d1f5]">{children}</pre>
 )
-const H2 = ({ id, children }: { id: string; children: React.ReactNode }) => <h2 id={id} className="mt-14 scroll-mt-20 text-[22px] font-semibold tracking-[-0.02em]">{children}</h2>
+const H2 = ({ id, children }: { id: string; children: React.ReactNode }) => <h2 id={id} className="font-pixel mt-14 scroll-mt-20 text-[26px] tracking-[-0.01em]">{children}</h2>
 const P = ({ children }: { children: React.ReactNode }) => <p className="mt-3 text-[15px] leading-relaxed text-ink-2">{children}</p>
 const C = ({ children }: { children: React.ReactNode }) => <code className="rounded bg-sunken px-1 py-0.5 font-mono text-[13px]">{children}</code>
 
@@ -34,14 +34,14 @@ const CODES: [string, string][] = [
 export default function Docs() {
   return (
     <>
-    <div className="bg-white text-ink"><main className="mx-auto grid max-w-[1120px] grid-cols-[minmax(0,1fr)] gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[200px_minmax(0,1fr)]">
+    <div className="bg-page text-ink"><main className="mx-auto grid max-w-[1120px] grid-cols-[minmax(0,1fr)] gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[200px_minmax(0,1fr)]">
       <aside className="hidden lg:block">
         <nav className="sticky top-20 space-y-1 text-[13.5px]">
           {TOC.map(([id, t]) => <a key={id} href={`#${id}`} className="block rounded-[6px] px-2 py-1 text-ink-2 hover:bg-sunken">{t}</a>)}
         </nav>
       </aside>
       <article className="max-w-[760px]">
-        <h1 className="text-[32px] font-semibold tracking-[-0.03em]">Docs</h1>
+        <h1 className="font-pixel text-[44px] tracking-[-0.01em]">Docs</h1>
         <P>Warden sits between your agent and its signature. Your agent sends the transaction it wants to sign, plus the context it was working from. Warden decodes it, simulates it against mainnet, runs rules, scores the recipient, checks intent, and returns approve, hold or block.</P>
 
         <H2 id="quickstart">Quickstart</H2>

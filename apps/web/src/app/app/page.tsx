@@ -41,7 +41,7 @@ export default function OverviewPage() {
         <PageHeader eyebrow="Overview" title="Add your first agent wallet" sub="Paste any Solana address your agent signs with. Warden backfills 30 days of history, learns what normal looks like, and alerts you when something is off. No code needed." />
         <Card className="relative overflow-hidden">
           <Dither className="absolute inset-y-0 right-0 h-full w-1/2" />
-          <div className="relative bg-gradient-to-r from-white via-white/90 to-transparent px-6 py-10 sm:px-8">
+          <div className="relative bg-gradient-to-r from-surface via-surface/90 to-transparent px-6 py-10 sm:px-8">
             <div className="eyebrow">Step 1 of 3</div>
             <p className="mt-2 max-w-md text-[15px] text-ink-2">Monitoring works on any address. When you are ready, add the SDK so your agent checks with Warden before signing.</p>
             <ButtonLink href="/app/wallets?add=1" variant="primary" className="mt-6">Add a wallet</ButtonLink>
@@ -59,11 +59,11 @@ export default function OverviewPage() {
       {/* hero: the big number over the dither */}
       <Card className="relative mb-5 overflow-hidden">
         <Dither className="absolute inset-0 h-full w-full" />
-        <div className="relative grid gap-6 bg-gradient-to-r from-white via-white/92 to-white/10 px-6 py-8 sm:px-8 lg:grid-cols-[1.1fr_1fr] lg:items-end">
+        <div className="relative grid gap-6 bg-gradient-to-r from-surface via-surface/90 to-surface/10 px-6 py-8 sm:px-8 lg:grid-cols-[1.1fr_1fr] lg:items-end">
           <div>
             <div className="eyebrow">Last 7 days · all wallets</div>
             <div className="mt-3 flex items-baseline gap-3">
-              <span className="tnum text-[72px] font-medium leading-none tracking-[-0.06em] sm:text-[96px]">{c.total}</span>
+              <span className="tnum font-pixel text-[80px] leading-none sm:text-[112px]">{c.total}</span>
               <span className="text-[20px] text-faint">checks</span>
             </div>
             <div className="mt-4 text-[17px]">
@@ -78,7 +78,7 @@ export default function OverviewPage() {
               {pending ? `${pending} payment${pending === 1 ? '' : 's'} need${pending === 1 ? 's' : ''} your decision. No answer before the timeout means deny.` : `Nothing needs you right now. Warden is watching ${data.wallets.total} wallet${data.wallets.total === 1 ? '' : 's'}.`}
             </p>
             <ButtonLink href={pending ? '/app/approvals' : '/app/test'} variant="primary" className="mt-4">
-              <PixelIcon name={pending ? 'approvals' : 'spark'} size={12} color="#5a9bff" />{pending ? 'Review approvals' : 'Test a transaction'}
+              <PixelIcon name={pending ? 'approvals' : 'spark'} size={12} color="#ffffff" />{pending ? 'Review approvals' : 'Test a transaction'}
             </ButtonLink>
           </div>
         </div>

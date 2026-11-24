@@ -44,7 +44,7 @@ function Keys() {
           <Button type="submit" variant="primary" className="sm:mb-[22px]">Create key</Button>
         </form>
         {fresh && (
-          <div className="mt-4 rounded-[8px] border border-ok/25 bg-ok-bg px-3 py-3 text-[13px]">
+          <div className="mt-4 border border-ok/25 bg-ok-bg px-3 py-3 text-[13px]">
             <div className="mb-1 font-medium text-ok">Copy this key now. It is not shown again.</div>
             <CopyText value={fresh} />
           </div>
@@ -109,7 +109,7 @@ function Channels() {
           </Field>
           <div className="flex items-center gap-3 sm:col-span-2"><Button type="submit" variant="primary">Add channel</Button>{msg && <span className="text-[13px] text-bad">{msg}</span>}</div>
           {secret && (
-            <div className="rounded-[8px] border border-ok/25 bg-ok-bg px-3 py-3 text-[13px] sm:col-span-2">
+            <div className=" border border-ok/25 bg-ok-bg px-3 py-3 text-[13px] sm:col-span-2">
               <div className="mb-1 font-medium text-ok">Signing secret: copy it now.</div>
               <CopyText value={secret} />
               <p className="mt-2 text-ink-2">Verify each delivery: <span className="font-mono text-[12px]">HMAC-SHA256(secret, timestamp + &quot;.&quot; + body)</span> must equal the <span className="font-mono text-[12px]">x-warden-signature</span> header (after <span className="font-mono text-[12px]">v1=</span>).</p>

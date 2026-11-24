@@ -24,7 +24,7 @@ export function DailyBars({ days, n = 14 }: { days: { day: string; outflow_usd: 
       <div className="flex h-28 items-end gap-[3px]" onMouseLeave={() => setHover(null)}>
         {slots.map((s, i) => (
           <div key={s.day} className="flex h-full flex-1 items-end" onMouseEnter={() => setHover(i)}>
-            <div className={`w-full rounded-[3px] ${hover === i ? 'bg-accent' : 'bg-accent/70'}`} style={{ height: `${s.usd ? Math.max(3, (s.usd / max) * 100) : 1.5}%`, opacity: s.usd ? 1 : 0.25 }} />
+            <div className={`w-full ${hover === i ? 'bg-lav' : 'bg-brand'}`} style={{ height: `${s.usd ? Math.max(3, (s.usd / max) * 100) : 1.5}%`, opacity: s.usd ? 1 : 0.25 }} />
           </div>
         ))}
       </div>
@@ -34,18 +34,18 @@ export function DailyBars({ days, n = 14 }: { days: { day: string; outflow_usd: 
 
 export function VerdictMix({ approve, hold, block }: { approve: number; hold: number; block: number }) {
   const total = approve + hold + block
-  if (!total) return <div className="h-2 rounded-full bg-sunken" />
+  if (!total) return <div className="h-2 bg-sunken" />
   return (
     <div>
-      <div className="flex h-2 overflow-hidden rounded-full bg-sunken">
+      <div className="flex h-2 overflow-hidden bg-sunken">
         <div className="bg-ok" style={{ width: `${(approve / total) * 100}%` }} />
         <div className="bg-warn" style={{ width: `${(hold / total) * 100}%` }} />
         <div className="bg-bad" style={{ width: `${(block / total) * 100}%` }} />
       </div>
       <div className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1 text-[12.5px] text-muted">
-        <span><span className="mr-1.5 inline-block size-2 rounded-full bg-ok" />Approve <span className="tnum text-ink">{approve}</span></span>
-        <span><span className="mr-1.5 inline-block size-2 rounded-full bg-warn" />Hold <span className="tnum text-ink">{hold}</span></span>
-        <span><span className="mr-1.5 inline-block size-2 rounded-full bg-bad" />Block <span className="tnum text-ink">{block}</span></span>
+        <span><span className="mr-1.5 inline-block size-2 bg-ok" />Approve <span className="tnum text-ink">{approve}</span></span>
+        <span><span className="mr-1.5 inline-block size-2 bg-warn" />Hold <span className="tnum text-ink">{hold}</span></span>
+        <span><span className="mr-1.5 inline-block size-2 bg-bad" />Block <span className="tnum text-ink">{block}</span></span>
       </div>
     </div>
   )

@@ -10,16 +10,16 @@ import { short } from '@/lib/format'
 
 export const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(' ')
 
-export const SURFACE = 'rounded-[14px] border border-line bg-surface'
+export const SURFACE = 'border border-line bg-surface'
 
 type BtnVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
 const BTN: Record<BtnVariant, string> = {
-  primary: 'bg-ink text-white hover:bg-brand-hover',
-  secondary: 'border border-line-strong bg-surface text-ink hover:border-ink-2/35',
+  primary: 'bg-brand text-white hover:bg-brand-hover',
+  secondary: 'border border-line-strong bg-surface text-ink hover:border-lav/60',
   ghost: 'text-muted hover:bg-sunken hover:text-ink',
-  danger: 'bg-bad text-white hover:bg-[#b42318]',
+  danger: 'bg-[#e0435f] text-white hover:bg-[#f0566f]',
 }
-const btnBase = (size: 'sm' | 'md') => cx('inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50', size === 'sm' ? 'h-8 px-3 text-[12.5px]' : 'h-9 px-4 text-[13px]')
+const btnBase = (size: 'sm' | 'md') => cx('px-btn inline-flex shrink-0 items-center justify-center gap-1.5 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50', size === 'sm' ? 'h-8 px-3 text-[12.5px]' : 'h-9 px-4 text-[13px]')
 
 export function Button({ variant = 'secondary', size = 'md', className, ...p }: ComponentProps<'button'> & { variant?: BtnVariant; size?: 'sm' | 'md' }) {
   return <button {...p} className={cx(btnBase(size), BTN[variant], className)} />
@@ -57,7 +57,7 @@ export function PageHeader({ title, sub, actions, back, eyebrow }: { title: Reac
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0 max-w-2xl">
           {eyebrow && <div className="eyebrow mb-3">{eyebrow}</div>}
-          <h1 className="text-[28px] font-medium leading-[1.08] tracking-[-0.04em] sm:text-[34px]">{title}</h1>
+          <h1 className="font-pixel text-[32px] leading-[1.05] tracking-[-0.01em] sm:text-[42px]">{title}</h1>
           {sub && <p className="mt-3 text-[14.5px] leading-relaxed text-muted">{sub}</p>}
         </div>
         {actions && <div className="flex shrink-0 flex-wrap gap-2">{actions}</div>}
@@ -73,7 +73,7 @@ const TONE: Record<Tone, string> = { ok: 'text-ok', warn: 'text-warn', bad: 'tex
 export function Pill({ tone = 'neutral', children, className, dot = true }: { tone?: Tone; children: ReactNode; className?: string; dot?: boolean }) {
   return (
     <span className={cx('inline-flex items-center gap-1.5 whitespace-nowrap font-mono text-[10.5px] uppercase tracking-[0.1em]', TONE[tone], className)}>
-      {dot && <span className="size-1.5 shrink-0 rounded-full bg-current" />}{children}
+      {dot && <span className="size-1.5 shrink-0 bg-current" />}{children}
     </span>
   )
 }
@@ -93,7 +93,7 @@ export function Stat({ label, value, sub }: { label: string; value: ReactNode; s
   return (
     <div className="min-w-0">
       <div className="eyebrow">{label}</div>
-      <div className="tnum mt-2 truncate text-[24px] font-medium tracking-[-0.03em]">{value}</div>
+      <div className="tnum font-pixel mt-2 truncate text-[28px]">{value}</div>
       {sub && <div className="mt-1 text-[12.5px] text-faint">{sub}</div>}
     </div>
   )
@@ -113,7 +113,7 @@ export function StatStrip({ children }: { children: ReactNode[] }) {
 export function Empty({ title, body, action }: { title: string; body?: ReactNode; action?: ReactNode }) {
   return (
     <div className="flex flex-col items-center px-6 py-14 text-center">
-      <div className="text-[14.5px] font-medium">{title}</div>
+      <div className="font-pixel text-[20px]">{title}</div>
       {body && <div className="mt-1.5 max-w-md text-[13.5px] leading-relaxed text-muted">{body}</div>}
       {action && <div className="mt-5">{action}</div>}
     </div>
@@ -130,7 +130,7 @@ export function Field({ label, hint, children, error }: { label: string; hint?: 
   )
 }
 
-export const inputCls = 'h-10 w-full rounded-[10px] border border-line-strong bg-surface px-3.5 text-[14px] outline-none placeholder:text-faint focus:border-ink-2/45'
+export const inputCls = 'h-10 w-full border border-line-strong bg-page px-3.5 text-[14px] outline-none placeholder:text-faint focus:border-ink-2/45'
 
 export function Input(p: ComponentProps<'input'>) {
   return <input {...p} className={cx(inputCls, p.className)} />
@@ -141,7 +141,7 @@ export function Select({ className, ...p }: ComponentProps<'select'>) {
 }
 
 export function Textarea(p: ComponentProps<'textarea'>) {
-  return <textarea {...p} className={cx('w-full rounded-[10px] border border-line-strong bg-surface px-3.5 py-2.5 text-[14px] outline-none placeholder:text-faint focus:border-ink-2/45', p.className)} />
+  return <textarea {...p} className={cx('w-full border border-line-strong bg-page px-3.5 py-2.5 text-[14px] outline-none placeholder:text-faint focus:border-ink-2/45', p.className)} />
 }
 
 export function CopyText({ value, display, mono = true }: { value: string; display?: string; mono?: boolean }) {
@@ -166,7 +166,7 @@ export function CopyText({ value, display, mono = true }: { value: string; displ
 export const Address = ({ value, n = 4 }: { value: string; n?: number }) => <CopyText value={value} display={short(value, n)} />
 
 export function Spinner({ className }: { className?: string }) {
-  return <span className={cx('inline-block size-4 animate-spin rounded-full border-2 border-line-strong border-t-ink-2', className)} aria-label="Loading" />
+  return <span className={cx('inline-block size-4 animate-spin rounded-full border-2 border-line-strong border-t-lav', className)} aria-label="Loading" />
 }
 
 export function LoadingBlock() {
@@ -189,7 +189,7 @@ export function Tabs<T extends string>({ value, onChange, items }: { value: T; o
     <div className="-mx-1 flex gap-1 overflow-x-auto px-1 [scrollbar-width:none]">
       {items.map((i) => (
         <button key={i.value} onClick={() => onChange(i.value)}
-          className={cx('h-9 whitespace-nowrap rounded-full px-4 text-[13px] transition-colors', value === i.value ? 'bg-ink text-white' : 'text-muted hover:bg-sunken hover:text-ink')}>
+          className={cx('h-9 whitespace-nowrap px-4 text-[13px] transition-colors', value === i.value ? 'bg-brand text-white' : 'text-muted hover:bg-sunken hover:text-ink')}>
           {i.label}
         </button>
       ))}
@@ -200,8 +200,8 @@ export function Tabs<T extends string>({ value, onChange, items }: { value: T; o
 export function Toggle({ checked, onChange, label, disabled }: { checked: boolean; onChange: (v: boolean) => void; label: string; disabled?: boolean }) {
   return (
     <button type="button" role="switch" aria-checked={checked} aria-label={label} disabled={disabled} onClick={() => onChange(!checked)}
-      className={cx('relative inline-flex h-6 w-10 shrink-0 items-center rounded-full transition-colors disabled:opacity-50', checked ? 'bg-ink' : 'bg-line-strong')}>
-      <span className={cx('inline-block size-[18px] rounded-full bg-white shadow-sm transition-transform', checked ? 'translate-x-[19px]' : 'translate-x-[3px]')} />
+      className={cx('relative inline-flex h-6 w-10 shrink-0 items-center transition-colors disabled:opacity-50', checked ? 'bg-brand' : 'bg-line-strong')}>
+      <span className={cx('inline-block size-[18px] bg-white transition-transform', checked ? 'translate-x-[19px]' : 'translate-x-[3px]')} />
     </button>
   )
 }

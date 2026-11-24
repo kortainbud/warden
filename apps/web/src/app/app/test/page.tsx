@@ -112,7 +112,7 @@ function Test() {
               <CardHeader title={<span className="flex flex-wrap items-center gap-2">Result <Pill tone={res.verdict === 'approve' ? 'ok' : res.verdict === 'hold' ? 'warn' : 'bad'}>{res.verdict}</Pill>{res.mode === 'shadow' && res.verdict !== 'approve' && <Pill tone="info">Shadow: let through</Pill>}</span>} sub={`Score ${res.score} · ${ms(res.latency_ms)}`} action={<Link href={`/app/checks/${res.id}`} className="text-[13px] text-muted hover:text-ink">Open check</Link>} />
               <div className="space-y-4 px-4 py-4 sm:px-5">
                 <p className="text-[15px] font-medium">{res.summary}</p>
-                {!res.simulated.ok && <p className="rounded-[8px] bg-bad-bg px-3 py-2 text-[13px] text-bad">Simulation: {res.simulated.error}</p>}
+                {!res.simulated.ok && <p className=" bg-bad-bg px-3 py-2 text-[13px] text-bad">Simulation: {res.simulated.error}</p>}
                 {res.simulated.vault_delta.length > 0 && (
                   <div className="text-[13.5px]">{res.simulated.vault_delta.map((d, i) => <div key={i} className="tnum">{d.amount} {d.symbol} <span className="text-muted">{usd(d.usd)}</span></div>)}</div>
                 )}

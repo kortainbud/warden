@@ -6,7 +6,7 @@ import { BAYER } from './pixel'
 // Light, Global Stack-blue take on Heliveil's dithered sky: low-res canvas, Bayer dithering
 // between palette steps, slow cloud drift. Fades to white toward `fadeFrom` so text stays clean.
 
-const PALETTE = ['#ffffff', '#f4f8fe', '#e8f0fd', '#d6e5fc', '#bcd4fa', '#97bbf6', '#6c9ef1', '#3f81ee', '#0c68eb', '#0a52bb']
+const PALETTE = ['#0b0716', '#110a22', '#180f30', '#22163f', '#2e1d55', '#3f2878', '#5636a6', '#7c5cff', '#a48cff', '#c8b9ff']
 const hex = (h: string) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)] as const
 
 function hash(x: number, y: number) { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s) }

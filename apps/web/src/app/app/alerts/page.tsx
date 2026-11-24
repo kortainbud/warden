@@ -42,7 +42,7 @@ function Alerts() {
                   <div className="flex flex-wrap items-center gap-2">
                     <Pill tone={severityTone(a.severity)}>{a.severity}</Pill>
                     <span className="text-[14px] font-medium">{a.title}</span>
-                    {!a.read_at && <span className="size-1.5 rounded-full bg-bad" aria-label="unread" />}
+                    {!a.read_at && <span className="size-1.5 bg-bad" aria-label="unread" />}
                   </div>
                   <p className="mt-1 text-[13.5px] text-ink-2">{a.body}</p>
                   <p className="mt-1 text-[12px] text-muted">{a.wallet_label ?? 'All wallets'}{a.delivered?.length ? ` · sent to ${a.delivered.filter((d) => d.ok).length}/${a.delivered.length} channel${a.delivered.length === 1 ? '' : 's'}` : ''}</p>

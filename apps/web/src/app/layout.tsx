@@ -3,6 +3,7 @@ import '@fontsource-variable/inter/opsz.css'
 import '@fontsource-variable/geist-mono'
 import '@fontsource-variable/source-serif-4'
 import './globals.css'
+import { GeistPixelSquare } from 'geist/font/pixel'
 
 export const metadata: Metadata = {
   title: { default: 'Warden: firewall and monitor for agent wallets on Solana', template: '%s · Warden' },
@@ -11,8 +12,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="min-h-dvh">{children}</body>
+    <html lang="en" className={GeistPixelSquare.variable}>
+      <body className="min-h-dvh bg-page text-ink">{children}</body>
     </html>
   )
 }

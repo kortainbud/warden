@@ -21,7 +21,7 @@ export function ReasonList({ reasons, showInfo = true }: { reasons: Reason[]; sh
     <ul className="space-y-2">
       {list.map((r, i) => (
         <li key={i} className="flex gap-2.5 text-[13.5px]">
-          <span className={cx('mt-[7px] size-1.5 shrink-0 rounded-full', r.severity === 'block' ? 'bg-bad' : r.severity === 'hold' ? 'bg-warn' : 'bg-faint')} />
+          <span className={cx('mt-[7px] size-1.5 shrink-0', r.severity === 'block' ? 'bg-bad' : r.severity === 'hold' ? 'bg-warn' : 'bg-faint')} />
           <span className="min-w-0">
             <span className="text-ink">{r.message}</span>
             <span className="ml-2 break-all font-mono text-[11.5px] text-faint">{r.code}</span>
@@ -89,7 +89,7 @@ export function HoldCard({ c, onDone }: { c: CheckRow; onDone: () => void }) {
   }
   const trigger = c.context_excerpt?.trigger
   return (
-    <div className="rounded-[14px] border border-warn/35 bg-surface">
+    <div className=" border border-warn/35 bg-surface">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 py-2.5 sm:px-5">
         <div className="flex items-center gap-2 text-[13px]">
           <Pill tone="warn">Awaiting approval</Pill>
@@ -99,9 +99,9 @@ export function HoldCard({ c, onDone }: { c: CheckRow; onDone: () => void }) {
         <span className="inline-flex items-center gap-1 text-[12.5px] text-muted"><Clock size={13} />Denies {timeAgo(c.expires_at)} if unanswered</span>
       </div>
       <div className="px-4 py-4 sm:px-5">
-        <p className="text-[15px] font-medium leading-snug">{c.summary}</p>
+        <p className="text-[16px] font-medium leading-snug">{c.summary}</p>
         {trigger?.excerpt && (
-          <blockquote className="mt-3 rounded-[8px] border border-line bg-sunken px-3 py-2 text-[13px] text-ink-2">
+          <blockquote className="mt-3 border border-line bg-sunken px-3 py-2 text-[13px] text-ink-2">
             <div className="mb-1 text-[11.5px] font-medium uppercase tracking-wide text-muted">From {trigger.source.replace('_', ' ')}{trigger.origin ? ` · ${trigger.origin}` : ''}</div>
             {trigger.excerpt}
           </blockquote>
