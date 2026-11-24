@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 
-export const ORANGE = '#ff571a'
-export const YELLOW = '#ffe41a'
+export const ORANGE = '#7c5cff'
+export const YELLOW = '#5b8cff'
 
 /** Warden's pixel mark: a 7×7 shield split by a gate line. */
 export function PixelMark({ size = 22, color = ORANGE }: { size?: number; color?: string }) {
@@ -16,11 +16,11 @@ export function PixelMark({ size = 22, color = ORANGE }: { size?: number; color?
 }
 
 export const Label = ({ children, className = '' }: { children: ReactNode; className?: string }) => (
-  <div className={`font-mono text-[13px] uppercase tracking-[0.08em] text-[#ff571a] ${className}`}>{'// '}{children}{' //'}</div>
+  <div className={`font-mono text-[13px] uppercase tracking-[0.08em] text-[#7c5cff] ${className}`}>{'// '}{children}{' //'}</div>
 )
 
 export const DoubleRule = () => (
-  <div aria-hidden><div className="h-px bg-[#ff571a]" /><div className="mt-[7px] h-px bg-white/25" /></div>
+  <div aria-hidden><div className="h-px bg-[#7c5cff]" /><div className="mt-[7px] h-px bg-white/25" /></div>
 )
 
 /** Value that scrambles through pixel glyphs before settling, when scrolled into view. */
@@ -118,9 +118,9 @@ export function PixelGraph({ className = '' }: { className?: string }) {
 
 /** Corner brackets used around stats. */
 export const Brackets = ({ children, className = '' }: { children: ReactNode; className?: string }) => (
-  <div className={`relative ${className}`}>
+  <div className={`group relative ${className}`}>
     {(['left-0 top-0 border-l border-t', 'right-0 top-0 border-r border-t', 'left-0 bottom-0 border-l border-b', 'right-0 bottom-0 border-r border-b'] as const).map((p) => (
-      <span key={p} className={`pointer-events-none absolute size-3.5 border-[#ff571a] ${p}`} />
+      <span key={p} className={`pointer-events-none absolute size-3.5 border-[#7c5cff] transition-all duration-300 group-hover:size-5 group-hover:border-[#c8b9ff] ${p}`} />
     ))}
     {children}
   </div>
@@ -129,14 +129,47 @@ export const Brackets = ({ children, className = '' }: { children: ReactNode; cl
 export function Faq({ items }: { items: [string, string][] }) {
   const [open, setOpen] = useState<number | null>(0)
   return (
-    <div className="divide-y divide-black/10 border-y border-black/10">
+    <div className="divide-y divide-[#120b22]/10 border-y border-[#120b22]/10">
       {items.map(([q, a], i) => (
-        <div key={q}>
-          <button onClick={() => setOpen(open === i ? null : i)} className="flex w-full items-center justify-between gap-4 px-3 py-3.5 text-left font-[family-name:var(--font-geist-pixel-square)] text-[17px] tracking-[-0.01em] text-black sm:text-[19px]" aria-expanded={open === i}>
-            {q}<span className="shrink-0 text-[20px] leading-none">{open === i ? '–' : '+'}</span>
+        <div key={q} className="group">
+          <button onClick={() => setOpen(open === i ? null : i)} className="flex w-full items-center justify-between gap-4 px-3 py-3.5 text-left font-[family-name:var(--font-geist-pixel-square)] text-[17px] tracking-[-0.01em] text-[#120b22] transition-colors hover:bg-[#7c5cff]/[0.06] sm:text-[19px]" aria-expanded={open === i}>
+            <span className="transition-transform duration-200 group-hover:translate-x-1">{q}</span>
+            <span className={`relative size-4 shrink-0 transition-transform duration-300 ${open === i ? 'rotate-180' : ''}`}><span className="absolute left-0 top-1/2 h-[2px] w-4 -translate-y-1/2 bg-[#120b22]" /><span className={`absolute left-1/2 top-0 h-4 w-[2px] -translate-x-1/2 bg-[#120b22] transition-transform duration-300 ${open === i ? 'scale-y-0' : ''}`} /></span>
           </button>
-          {open === i && <p className="px-3 pb-5 text-[15px] leading-relaxed text-black/65">{a}</p>}
+          <div className={`grid transition-[grid-template-rows] duration-300 ease-out ${open === i ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
+            <div className="overflow-hidden"><p className="px-3 pb-5 text-[15px] leading-relaxed text-[#120b22]/65">{a}</p></div>
+          </div>
         </div>
+      ))}
+    </div>
+  )
+}
+
+const LOGOS: { n: string; src: string; w: number; word?: boolean; href: string }[] = [
+  { n: 'Solana', src: '/logos/solana.svg', w: 26, href: 'https://solana.com' },
+  { n: 'Squads', src: '/logos/squads.svg', w: 104, word: true, href: 'https://squads.xyz' },
+  { n: 'Helius', src: '/logos/helius.svg', w: 96, word: true, href: 'https://www.helius.dev' },
+  { n: 'Jupiter', src: '/logos/jupiter.svg', w: 26, href: 'https://jup.ag' },
+  { n: 'TypeScript', src: '/logos/typescript.svg', w: 24, href: 'https://www.typescriptlang.org' },
+]
+
+/** Logo cells: monochrome at rest; on hover the brackets close in, the logo lifts and its role slides up. */
+export function LogoGrid() {
+  const roles: Record<string, string> = { Solana: 'mainnet simulation', Squads: 'smart accounts', Helius: 'RPC + streams', Jupiter: 'decoded swaps', TypeScript: '@warden/sdk' }
+  return (
+    <div className="mx-auto mt-6 grid max-w-[880px] grid-cols-2 gap-2.5 sm:grid-cols-5">
+      {LOGOS.map((l) => (
+        <a key={l.n} href={l.href} target="_blank" rel="noreferrer" className="group relative flex h-[96px] flex-col items-center justify-center overflow-hidden border border-white/10 bg-[#130c24] transition-colors duration-300 hover:border-[#7c5cff]/60 hover:bg-[#1a1033]">
+          {(['left-1.5 top-1.5 border-l border-t', 'right-1.5 top-1.5 border-r border-t', 'left-1.5 bottom-1.5 border-l border-b', 'right-1.5 bottom-1.5 border-r border-b'] as const).map((p) => (
+            <span key={p} className={`absolute size-2.5 border-[#c8b9ff] opacity-0 transition-all duration-300 group-hover:opacity-100 ${p} scale-150 group-hover:scale-100`} />
+          ))}
+          <span className="flex items-center gap-2 transition-transform duration-300 group-hover:-translate-y-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={l.src} alt={l.n} style={{ width: l.w }} className={`opacity-85 transition-[filter,opacity] duration-300 group-hover:opacity-100 ${l.n === 'Jupiter' ? 'grayscale group-hover:grayscale-0' : ''}`} />
+            {!l.word && <span className="text-[19px] font-semibold tracking-[-0.03em] text-white">{l.n}</span>}
+          </span>
+          <span className="absolute bottom-2 translate-y-4 font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#c8b9ff] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">{roles[l.n]}</span>
+        </a>
       ))}
     </div>
   )
@@ -168,9 +201,10 @@ const CASES = [
 export function UseCases() {
   const [i, setI] = useState(0)
   const [auto, setAuto] = useState(true)
+  const [k, setK] = useState(0)
   useEffect(() => {
     if (!auto) return
-    const id = setInterval(() => setI((x) => (x + 1) % CASES.length), 5000)
+    const id = setInterval(() => setK((x) => { if (x >= 100) { setI((n) => (n + 1) % CASES.length); return 0 } return x + 2 }), 100)
     return () => clearInterval(id)
   }, [auto])
   const c = CASES[i]!
@@ -178,20 +212,21 @@ export function UseCases() {
     <div className="grid grid-cols-[minmax(0,1fr)] border-y border-white/10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)]">
       <div className="border-white/10 lg:border-r">
         {CASES.map((x, n) => (
-          <button key={x.id} onClick={() => { setI(n); setAuto(false) }}
-            className={`block w-full border-b border-white/10 px-6 text-left last:border-b-0 sm:px-8 ${n === i ? 'border-b-2 border-b-[#ff571a] bg-[#1a0c06] py-6' : 'py-5 hover:bg-white/[0.03]'}`}>
-            <div className={`font-mono text-[15px] tracking-[0.12em] ${n === i ? 'text-[#ff571a]' : 'text-white/85'}`}>{String(n + 1).padStart(2, '0')} {x.id}</div>
+          <button key={x.id} onClick={() => { setI(n); setAuto(false); setK(0) }}
+            className={`block w-full border-b border-white/10 px-6 text-left transition-colors last:border-b-0 sm:px-8 ${n === i ? 'border-b-2 border-b-[#7c5cff] bg-[#1a1033] py-6' : 'py-5 hover:bg-white/[0.04] hover:pl-9'}`}>
+            <div className={`font-mono text-[15px] tracking-[0.12em] ${n === i ? 'text-[#7c5cff]' : 'text-white/85'}`}>{String(n + 1).padStart(2, '0')} {x.id}</div>
             {n === i && <div className="mt-3 max-w-md text-[17px] leading-snug text-white">{x.lead}</div>}
+            {n === i && auto && <div className="mt-4 h-px bg-white/10"><div className="h-full bg-[#c8b9ff] transition-[width] duration-100 ease-linear" style={{ width: `${k}%` }} /></div>}
           </button>
         ))}
       </div>
       <div className="border-t border-white/10 lg:border-t-0">
-        <div className="border-b border-white/10 px-6 py-7 sm:px-8">
+        <div key={c.id} className="border-b border-white/10 px-6 py-7 [animation:fadeUp_.5s_ease-out] sm:px-8">
           <h3 className="font-[family-name:var(--font-geist-pixel-square)] text-[24px] leading-[1.15] tracking-[-0.01em] text-white sm:text-[28px]">{c.lead}</h3>
         </div>
-        {c.rows.map((r) => (
-          <div key={r} className="flex items-center gap-4 border-b border-white/10 px-6 py-5 last:border-b-0 sm:px-8">
-            <span className="flex size-7 shrink-0 items-center justify-center bg-white text-black"><span className="font-mono text-[14px] leading-none">→</span></span>
+        {c.rows.map((r, n) => (
+          <div key={c.id + r} className="group flex items-center gap-4 border-b border-white/10 px-6 py-5 opacity-0 last:border-b-0 [animation:fadeUp_.5s_ease-out_forwards] sm:px-8" style={{ animationDelay: `${120 + n * 110}ms` }}>
+            <span className="flex size-7 shrink-0 items-center justify-center bg-white text-[#0b0716] transition-colors group-hover:bg-[#7c5cff] group-hover:text-white"><span className="font-mono text-[14px] leading-none">→</span></span>
             <span className="max-w-[300px] text-[14px] leading-snug text-white/85">{r}</span>
           </div>
         ))}

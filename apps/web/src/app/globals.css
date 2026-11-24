@@ -50,3 +50,25 @@ body { font-feature-settings: "cv11", "ss01"; }
 @media (prefers-reduced-motion: reduce) { [class*='animate-[marquee'] { animation: none } }
 
 .eyebrow { font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-faint); }
+
+/* ---- site micro-interactions ---- */
+.flow-line { background: repeating-linear-gradient(90deg, #7c5cff 0 6px, transparent 6px 11px); background-size: 22px 1px; animation: flow 0.9s linear infinite; }
+@keyframes flow { to { background-position: 22px 0; } }
+.flow-v { background: repeating-linear-gradient(180deg, #7c5cff 0 6px, transparent 6px 11px); background-size: 1px 22px; animation: flowv 0.9s linear infinite; }
+@keyframes flowv { to { background-position: 0 22px; } }
+.stripes-move { animation: stripes 6s linear infinite; }
+@keyframes stripes { to { background-position: 276px 0; } }
+.float-a { animation: floaty 5s ease-in-out infinite; }
+.float-b { animation: floaty 6s ease-in-out -2s infinite; }
+@keyframes floaty { 50% { transform: translateY(-8px); } }
+.blink { animation: blink 2.4s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0.15; } }
+.px-btn { transition: transform .15s ease, box-shadow .15s ease; }
+.px-btn:hover { transform: translate(-2px, -2px); box-shadow: 3px 3px 0 0 #7c5cff; }
+.px-btn:active { transform: translate(0, 0); box-shadow: none; }
+.shimmer { background: linear-gradient(90deg, #c8b9ff, #fff, #5b8cff, #c8b9ff); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shimmer 6s linear infinite; }
+@keyframes shimmer { to { background-position: 300% 0; } }
+@media (prefers-reduced-motion: reduce) { .flow-line, .flow-v, .stripes-move, .float-a, .float-b, .blink, .shimmer { animation: none !important; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes pulseMark { 50% { transform: scale(1.06); filter: drop-shadow(0 0 24px rgba(124,92,255,0.7)); } }
+@keyframes hotPulse { 50% { box-shadow: 0 0 0 4px rgba(124,92,255,0.25); } }
