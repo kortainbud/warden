@@ -23,6 +23,7 @@
     "@wallet-standard/app": "^1.1.1",
     "@warden/decoder": "0.1.0",
     "@warden/engine": "0.1.0",
+    "geist": "^1.9.2",
     "lucide-react": "^1.78.0",
     "next": "16.4.6",
     "react": "19.3.0",

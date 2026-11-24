@@ -1,8 +1,9 @@
-import Header from '@/components/attio/Header'
+import { GeistPixelSquare } from 'geist/font/pixel'
+import { Header } from '@/components/hydra/Chrome'
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-dvh bg-white text-[#0e0f11]">
+    <div className={`${GeistPixelSquare.variable} min-h-dvh bg-black text-white`}>
       <Header />
       {children}
     </div>

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Footer } from '@/components/attio/Light'
+import { Footer } from '@/components/hydra/Chrome'
 
 export const metadata: Metadata = { title: 'Docs' }
 
@@ -34,7 +34,7 @@ const CODES: [string, string][] = [
 export default function Docs() {
   return (
     <>
-    <main className="mx-auto grid max-w-[1120px] grid-cols-[minmax(0,1fr)] gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[200px_minmax(0,1fr)]">
+    <div className="bg-white text-ink"><main className="mx-auto grid max-w-[1120px] grid-cols-[minmax(0,1fr)] gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[200px_minmax(0,1fr)]">
       <aside className="hidden lg:block">
         <nav className="sticky top-20 space-y-1 text-[13.5px]">
           {TOC.map(([id, t]) => <a key={id} href={`#${id}`} className="block rounded-[6px] px-2 py-1 text-ink-2 hover:bg-sunken">{t}</a>)}
@@ -161,7 +161,7 @@ if (Math.abs(Date.now() / 1000 - Number(ts)) > 300) reject();`}</Code>
           <li><span className="font-medium text-ink">Not yet:</span> protected smart accounts with Warden co-signing (they ship after an external audit), push notifications, email, fund tracing, Python SDK and the Agent Kit plugin.</li>
         </ul>
       </article>
-    </main>
+    </main></div>
     <Footer />
     </>
   )
