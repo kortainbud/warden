@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useState } from 'react'
-import { Plus, Snowflake } from '@phosphor-icons/react'
+import { Plus, Snowflake } from '@/components/icons'
 import { useApi, send } from '@/lib/api'
 import { isAddressLike, short, timeAgo, usd } from '@/lib/format'
 import type { WalletRow } from '@/lib/types'

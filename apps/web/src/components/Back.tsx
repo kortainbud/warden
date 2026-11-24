@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { ArrowLeft } from '@phosphor-icons/react'
+import { ArrowLeft } from '@/components/icons'
 
 const LABELS: [RegExp, string][] = [
   [/^\/app\/approvals/, 'Approvals'],

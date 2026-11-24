@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState, type ComponentProps, type ReactNode } from 'react'
-import { Check, Copy } from '@phosphor-icons/react'
+import { Check, Copy } from '@/components/icons'
 import { short } from '@/lib/format'
 
 export const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(' ')

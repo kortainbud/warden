@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight } from '@phosphor-icons/react/dist/ssr'
+import { ArrowRight } from '@/components/icons'
 import { Wordmark } from '@/components/brand'
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {

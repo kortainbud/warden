@@ -1,4 +1,4 @@
-import { ChartLineUp, HandPalm, ListChecks, ShieldWarning, Wallet, Bell, Clock } from '@phosphor-icons/react/dist/ssr'
+import { ChartLineUp, HandPalm, ListChecks, ShieldWarning, Wallet, Bell, Clock } from '@/components/icons'
 import { Mark } from '../brand'
 
 /** Product window for the hero: the approvals screen, drawn with the same parts as the real dashboard. */

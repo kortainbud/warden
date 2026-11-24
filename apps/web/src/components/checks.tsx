@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { ArrowRight, Clock } from '@phosphor-icons/react'
+import { ArrowRight, Clock } from '@/components/icons'
 import { Button, Pill, VerdictPill, cx } from './ui'
 import { send } from '@/lib/api'
 import { short, timeAgo, usd } from '@/lib/format'

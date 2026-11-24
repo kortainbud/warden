@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect } from 'react'
-import { ArrowRight, Plus } from '@phosphor-icons/react'
+import { ArrowRight, Plus } from '@/components/icons'
 import { useApi } from '@/lib/api'
 import { ms, timeAgo, usd } from '@/lib/format'
 import type { AlertRow, CheckRow } from '@/lib/types'

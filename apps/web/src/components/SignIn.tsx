@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { ArrowUpRight } from '@phosphor-icons/react'
+import { ArrowUpRight } from '@/components/icons'
 import { Mark } from './brand'
 import { Card, Spinner } from './ui'
 import { solanaWallets, useSession, type StdWallet } from '@/lib/session'

@@ -16,8 +16,11 @@
 
   --color-brand: #0e141b;       /* near-black: primary actions */
   --color-brand-hover: #263241;
-  --color-accent: #2563eb;
-  --color-accent-soft: #eaf1ff;
+  --color-accent: #0c68eb;       /* Global Stack blue */
+  --color-accent-hover: #0a58c9;
+  --color-accent-soft: #eef4fe;
+  --color-accent-2: #d0e1fc;
+  --color-accent-3: #b1cef9;
   --color-brand-ink: #ffffff;
 
   --color-ok: #2f6b4f;
@@ -26,18 +29,18 @@
   --color-warn-bg: #faf3e6;
   --color-bad: #9b2f2a;
   --color-bad-bg: #fbefed;
-  --color-info: #1e4fb8;
-  --color-info-bg: #eef4ff;
+  --color-info: #0b58c8;
+  --color-info-bg: #eef4fe;
 
   --radius-card: 10px;
 }
 
 html { -webkit-font-smoothing: antialiased; }
 body { background: var(--color-page); color: var(--color-ink); font-family: var(--font-sans); }
-::selection { background: #cfe0ff; }
+::selection { background: #d0e1fc; }
 .tnum { font-variant-numeric: tabular-nums; }
-:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+:focus-visible { outline: 2px solid #0c68eb; outline-offset: 2px; }
 
 body { font-feature-settings: "cv11", "ss01"; }
 .display { letter-spacing: -0.035em; font-weight: 600; line-height: 1.04; }
-.stripes { background-image: repeating-linear-gradient(90deg, rgba(37,99,235,.07) 0 1px, transparent 1px 6px); }
+.stripes { background-image: repeating-linear-gradient(90deg, rgba(12,104,235,.08) 0 1px, transparent 1px 6px); }

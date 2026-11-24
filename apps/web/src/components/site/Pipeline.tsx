@@ -1,11 +1,11 @@
 'use client'
 
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { Check, X } from '@phosphor-icons/react'
+import { Check, X, IconTile, FileCode, Radar, Scale, ShieldCheck, Gauge, Fingerprint } from '@/components/icons'
 
 const SHORT = '6zVM…s2V9'
 
-interface Stage { id: string; name: string; ms: string; head: string; rest: string; ui: ReactNode }
+interface Stage { id: string; name: string; ms: string; icon: Parameters<typeof IconTile>[0]['icon']; head: string; rest: string; ui: ReactNode }
 
 const Row = ({ l, r, tone }: { l: ReactNode; r: ReactNode; tone?: 'bad' | 'ok' }) => (
   <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-2.5 text-[13px] last:border-0">
@@ -22,7 +22,7 @@ const Panel = ({ title, children }: { title: string; children: ReactNode }) => (
 
 const STAGES: Stage[] = [
   {
-    id: 'decode', name: 'Decode', ms: '5 ms', head: 'Read every instruction.', rest: 'Transfers, swaps, approvals and smart account changes, decoded the same way in the firewall and the monitor. Unknown programs raise risk.',
+    id: 'decode', icon: FileCode, name: 'Decode', ms: '5 ms', head: 'Read every instruction.', rest: 'Transfers, swaps, approvals and smart account changes, decoded the same way in the firewall and the monitor. Unknown programs raise risk.',
     ui: (
       <Panel title="decode · v0 message · 3 instructions">
         <Row l="Compute Budget" r="set limit 60,000" />
@@ -32,7 +32,7 @@ const STAGES: Stage[] = [
     ),
   },
   {
-    id: 'simulate', name: 'Simulate', ms: '120 ms', head: 'Know exactly what leaves.', rest: 'Run it against current mainnet state and compute the balance change for every account before anything is signed.',
+    id: 'simulate', icon: Radar, name: 'Simulate', ms: '120 ms', head: 'Know exactly what leaves.', rest: 'Run it against current mainnet state and compute the balance change for every account before anything is signed.',
     ui: (
       <Panel title="simulate · mainnet · ok">
         <Row l="Scout (vault)" r="-4,200.00 USDC" tone="bad" />
@@ -42,7 +42,7 @@ const STAGES: Stage[] = [
     ),
   },
   {
-    id: 'rules', name: 'Rules', ms: '<1 ms', head: 'Your limits, enforced.', rest: 'Per-transaction and daily caps, allow and deny lists, allowed programs, rate limits and pre-approved routes.',
+    id: 'rules', icon: Scale, name: 'Rules', ms: '<1 ms', head: 'Your limits, enforced.', rest: 'Per-transaction and daily caps, allow and deny lists, allowed programs, rate limits and pre-approved routes.',
     ui: (
       <Panel title="policy · Payer v3 · enforce">
         {[['Per-transaction cap $50', false], ['Daily cap $500', false], ['Allowed programs', true], ['Denylist', true], ['Rate limit 120/h', true]].map(([l, ok]) => (
@@ -52,7 +52,7 @@ const STAGES: Stage[] = [
     ),
   },
   {
-    id: 'reputation', name: 'Threat Network', ms: '10 ms', head: 'Score who gets paid.', rest: 'Every recipient and program is scored from blocks across all customers, confirmed reports and its age onchain.',
+    id: 'reputation', icon: ShieldCheck, name: 'Threat Network', ms: '10 ms', head: 'Score who gets paid.', rest: 'Every recipient and program is scored from blocks across all customers, confirmed reports and its age onchain.',
     ui: (
       <Panel title={`reputation · ${SHORT}`}>
         <div className="px-4 py-4">
@@ -66,7 +66,7 @@ const STAGES: Stage[] = [
     ),
   },
   {
-    id: 'behaviour', name: 'Behaviour', ms: '5 ms', head: 'Compare with normal.', rest: 'Amount, recipient novelty, time of day and velocity against the wallet’s own last 30 days.',
+    id: 'behaviour', icon: Gauge, name: 'Behaviour', ms: '5 ms', head: 'Compare with normal.', rest: 'Amount, recipient novelty, time of day and velocity against the wallet’s own last 30 days.',
     ui: (
       <Panel title="baseline · 30 days · 412 payments">
         <div className="px-4 py-4">
@@ -81,7 +81,7 @@ const STAGES: Stage[] = [
     ),
   },
   {
-    id: 'intent', name: 'Intent', ms: 'when needed', head: 'Who actually asked?', rest: 'Provenance rules first, a small model second. Tweets, webpages and tool output are evidence, never authority to pay.',
+    id: 'intent', icon: Fingerprint, name: 'Intent', ms: 'when needed', head: 'Who actually asked?', rest: 'Provenance rules first, a small model second. Tweets, webpages and tool output are evidence, never authority to pay.',
     ui: (
       <Panel title="intent · provenance">
         <div className="space-y-3 px-4 py-4 text-[13px]">
@@ -126,7 +126,7 @@ export default function Pipeline() {
           <div key={s.id} data-id={s.id} ref={(el) => { refs.current[s.id] = el }}
             className={`grid grid-cols-[minmax(0,1fr)] items-center gap-8 px-5 py-14 sm:px-10 lg:grid-cols-2 ${i ? 'border-t border-line' : ''}`}>
             <div>
-              <div className="mb-3 font-mono text-[12px] text-muted md:hidden">{String(i + 1).padStart(2, '0')} · {s.name} · {s.ms}</div>
+              <div className="mb-5 flex items-center gap-3"><IconTile icon={s.icon} /><span className="font-mono text-[12px] text-muted md:hidden">{s.name} · {s.ms}</span></div>
               <p className="max-w-md text-[22px] font-medium leading-snug tracking-[-0.02em]">{s.head} <span className="text-muted">{s.rest}</span></p>
             </div>
             <div>{s.ui}</div>

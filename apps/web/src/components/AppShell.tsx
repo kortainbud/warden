@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState, type ReactNode } from 'react'
 import {
   Bell, BellRinging, ChartLineUp, Flask, GearSix, HandPalm, List, ListChecks, ShieldWarning, SignOut, Snowflake, Wallet, X,
-} from '@phosphor-icons/react'
+} from '@/components/icons'
 import { Mark } from './brand'
 import { Button, cx } from './ui'
 import { useApi, send } from '@/lib/api'

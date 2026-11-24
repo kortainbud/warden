@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, use, useEffect, useState } from 'react'
-import { ArrowClockwise, ArrowSquareOut, Snowflake } from '@phosphor-icons/react'
+import { ArrowClockwise, ArrowSquareOut, Snowflake } from '@/components/icons'
 import { programName } from '@warden/decoder'
 import { TEMPLATES, type Policy } from '@warden/engine'
 import { useApi, send, get } from '@/lib/api'
