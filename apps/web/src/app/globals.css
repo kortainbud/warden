@@ -2,6 +2,7 @@
 
 @theme {
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Source Serif 4 Variable", Georgia, serif;
   --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, monospace;
 
   --color-page: #f9fafc;
@@ -44,3 +45,6 @@ body { background: var(--color-page); color: var(--color-ink); font-family: var(
 body { font-feature-settings: "cv11", "ss01"; }
 .display { letter-spacing: -0.035em; font-weight: 600; line-height: 1.04; }
 .stripes { background-image: repeating-linear-gradient(90deg, rgba(12,104,235,.08) 0 1px, transparent 1px 6px); }
+
+@keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+@media (prefers-reduced-motion: reduce) { [class*='animate-[marquee'] { animation: none } }

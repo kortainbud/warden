@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import '@fontsource-variable/inter/opsz.css'
 import '@fontsource-variable/geist-mono'
+import '@fontsource-variable/source-serif-4'
 import './globals.css'
 
 export const metadata: Metadata = {
