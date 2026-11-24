@@ -23,7 +23,7 @@ async function insertEvent(walletId: string, e: EventRow): Promise<boolean> {
   const rows = await sql`
     INSERT INTO events (wallet_id, signature, slot, ts, type, source, description, actions, changes, outflow_usd, inflow_usd,
       outflow_unpriced, counterparties, recipients, programs, fee, failed, signed_by_wallet)
-    VALUES (${walletId}, ${e.signature}, ${e.slot}, ${e.ts.toISOString()}, ${e.type}, ${e.source}, ${e.description}, ${e.actions}, ${e.changes},
+    VALUES (${walletId}, ${e.signature}, ${e.slot}, ${e.ts.toISOString()}, ${e.type}, ${e.source}, ${e.description}, ${json(e.actions)}, ${json(e.changes)},
       ${e.outflowUsd}, ${e.inflowUsd}, ${e.outflowUnpriced}, ${e.counterparties}, ${e.recipients}, ${e.programs}, ${e.fee}, ${e.failed}, ${e.signedByWallet})
     ON CONFLICT (wallet_id, signature) DO NOTHING RETURNING signature`
   return rows.length > 0

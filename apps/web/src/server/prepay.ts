@@ -85,8 +85,8 @@ export async function runPrepay(w: Wallet, pr: PaymentRequest, context: ContextE
   await sql`
     INSERT INTO checks (id, wallet_id, origin, endpoint, message_hash, summary, actions, outflows, outflow_usd, recipients, programs, stages, reasons,
       score, verdict, enforced, mode, policy_version, model_used, context_hash, context_excerpt, latency_ms, status)
-    VALUES (${cid}, ${w.id}, 'prepay', ${endpointKey}, ${await sha256Hex(JSON.stringify(pr))}, ${ev.summary}, ${json(facts.actions)}, ${facts.outflows}, ${ev.outflowUsd},
-      ${json([{ address: pr.payTo, isNew: facts.recipients[0]!.isNew, score: rep.score, reasons: rep.reasons }])}, ${facts.programs}, ${ev.stages}, ${ev.reasons},
+    VALUES (${cid}, ${w.id}, 'prepay', ${endpointKey}, ${await sha256Hex(JSON.stringify(pr))}, ${ev.summary}, ${json(facts.actions)}, ${json(facts.outflows)}, ${ev.outflowUsd},
+      ${json([{ address: pr.payTo, isNew: facts.recipients[0]!.isNew, score: rep.score, reasons: rep.reasons }])}, ${facts.programs}, ${json(ev.stages)}, ${json(ev.reasons)},
       ${ev.score}, ${ev.verdict}, ${ev.enforced}, ${policyRow.policy.mode}, ${policyRow.version}, ${modelUsed},
       ${context ? await sha256Hex(JSON.stringify(context)) : null}, ${{ resource: pr.resource, description: pr.description?.slice(0, 300) ?? null }}, ${latency}, ${status})`
   let expiresAt: string | null = null

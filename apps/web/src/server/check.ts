@@ -169,9 +169,9 @@ export async function runCheck(w: Wallet, req: CheckRequest): Promise<CheckRespo
   const [row] = await sql<{ created_at: string }>`
     INSERT INTO checks (id, wallet_id, origin, message_hash, summary, actions, outflows, outflow_usd, recipients, programs, stages, reasons,
       score, verdict, enforced, mode, policy_version, model_used, context_hash, context_excerpt, latency_ms, stage_ms, status)
-    VALUES (${cid}, ${w.id}, ${req.origin ?? 'api'}, ${messageHash}, ${ev.summary}, ${json(actions)}, ${outflows}, ${ev.outflowUsd},
+    VALUES (${cid}, ${w.id}, ${req.origin ?? 'api'}, ${messageHash}, ${ev.summary}, ${json(actions)}, ${json(outflows)}, ${ev.outflowUsd},
       ${json(recipients.map((r) => ({ address: r.address, isNew: r.isNew, score: r.reputation.score, reasons: r.reputation.reasons })))},
-      ${facts.programs}, ${ev.stages}, ${ev.reasons}, ${ev.score}, ${ev.verdict}, ${ev.enforced}, ${policy.mode}, ${policyRow.version},
+      ${facts.programs}, ${json(ev.stages)}, ${json(ev.reasons)}, ${ev.score}, ${ev.verdict}, ${ev.enforced}, ${policy.mode}, ${policyRow.version},
       ${modelUsed}, ${contextHash}, ${excerpt}, ${latency}, ${stageMs}, ${status})
     RETURNING created_at`
 

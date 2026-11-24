@@ -3,7 +3,7 @@
 
 import 'server-only'
 import type { Reputation } from '@warden/engine'
-import { sql } from './db'
+import { json, sql } from './db'
 import { firstSeen } from './helius'
 import { isDemo } from './env'
 
@@ -82,7 +82,7 @@ export async function addressReputation(address: string, opts: { live?: boolean 
     if (age.fresh) {
       const signals = { ...(row?.signals ?? {}), firstSeen: age.firstSeen, firstSeenCheckedAt: Math.floor(now) }
       await sql`
-        INSERT INTO entities (kind, key, score, reasons, signals) VALUES ('address', ${address}, ${Math.min(100, score)}, ${reasons}, ${signals})
+        INSERT INTO entities (kind, key, score, reasons, signals) VALUES ('address', ${address}, ${Math.min(100, score)}, ${json(reasons)}, ${signals})
         ON CONFLICT (kind, key) DO UPDATE SET score = EXCLUDED.score, reasons = EXCLUDED.reasons, signals = EXCLUDED.signals, updated_at = now()`
     }
   }
@@ -95,6 +95,6 @@ export const REPORT_CATEGORIES = ['drainer', 'phishing', 'prompt injection payee
 
 export async function confirmReport(kind: string, key: string, category: string) {
   await sql`
-    INSERT INTO entities (kind, key, score, reasons, signals) VALUES (${kind}, ${key}, 100, ${[`Reported as ${category}`]}, ${{ confirmed: category }})
+    INSERT INTO entities (kind, key, score, reasons, signals) VALUES (${kind}, ${key}, 100, ${json([`Reported as ${category}`])}, ${{ confirmed: category }})
     ON CONFLICT (kind, key) DO UPDATE SET score = 100, signals = entities.signals || ${{ confirmed: category }}::jsonb, updated_at = now()`
 }

@@ -1,7 +1,7 @@
 // Alerts: stored per owner, de-duplicated, and fanned out to the owner's channels.
 
 import 'server-only'
-import { sql } from './db'
+import { json, sql } from './db'
 import { id } from './env'
 
 export type Severity = 'info' | 'warning' | 'critical'
@@ -50,7 +50,7 @@ export async function raiseAlert(a: AlertInput): Promise<boolean> {
         }
       }),
   )
-  if (delivered.length) await sql`UPDATE alerts SET delivered = ${delivered} WHERE id = ${aid}`
+  if (delivered.length) await sql`UPDATE alerts SET delivered = ${json(delivered)} WHERE id = ${aid}`
   return true
 }
 
